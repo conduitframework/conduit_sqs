@@ -1,0 +1,10 @@
+#stroke: #aaaaaa
+
+[ConduitSQS] <- [Setup]
+[ConduitSQS] <- * [PollerSupervisor]
+[PollerSupervisor] <- * [Poller]
+[ConduitSQS] <- * [WorkerGroupSupervisor]
+[WorkerGroupSupervisor] <- * [WorkerSupervisor]
+[WorkerSupervisor] <- * [Worker]
+[Poller] <-- subscribes [Worker]
+[Setup] activates --> * [Poller]

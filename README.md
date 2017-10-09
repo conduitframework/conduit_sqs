@@ -1,4 +1,4 @@
-# ConduitSqs
+# ConduitSQS
 
 **TODO: Add description**
 
