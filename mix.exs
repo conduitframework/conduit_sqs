@@ -24,7 +24,14 @@ defmodule ConduitSQS.Mixfile do
 
       # Coveralls
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: ["coveralls": :test, "coveralls.circle": :test],
+      preferred_cli_env: [
+        "coveralls": :test,
+        "coveralls.circle": :test,
+        vcr: :test,
+        "vcr.delete": :test,
+        "vcr.check": :test,
+        "vcr.show": :test
+      ],
 
       aliases: ["publish": ["hex.publish", &git_tag/1]]
     ]
@@ -48,11 +55,17 @@ defmodule ConduitSQS.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:conduit, "~> 0.8"},
-     {:injex, "~> 1.0"},
-     {:ex_doc, "~> 0.14", only: :dev},
-     {:dialyxir, "~> 0.4", only: :dev},
-     {:excoveralls, "~> 0.5", only: :test}]
+    [
+      {:conduit, "~> 0.8"},
+      {:ex_aws, "~> 1.1"},
+      {:hackney, "~> 1.9"},
+      {:sweet_xml, "~> 0.6"},
+      {:injex, "~> 1.0"},
+      {:ex_doc, "~> 0.14", only: :dev},
+      {:dialyxir, "~> 0.4", only: :dev},
+      {:excoveralls, "~> 0.5", only: :test},
+      {:exvcr, "~> 0.9", only: :test}
+    ]
   end
 
   defp package do

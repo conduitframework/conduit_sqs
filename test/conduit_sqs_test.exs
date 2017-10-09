@@ -28,6 +28,7 @@ defmodule ConduitSQSTest do
 
       # {strategy, max_restarts, max_seconds}
       assert adapter_opts == {:one_for_one, 3, 5}
+
       assert child_specs == [
         {ConduitSQS.Setup, {ConduitSQS.Setup, :start_link, [[{:queue, "conduitsqs-test", []}], []]},
           :transient, 5000, :worker, [ConduitSQS.Setup]},
