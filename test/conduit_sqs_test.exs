@@ -32,7 +32,8 @@ defmodule ConduitSQSTest do
       assert child_specs == [
         {ConduitSQS.Setup, {ConduitSQS.Setup, :start_link, [[{:queue, "conduitsqs-test", []}], []]},
           :transient, 5000, :worker, [ConduitSQS.Setup]},
-        {ConduitSQS.PollerSupervisor, {ConduitSQS.PollerSupervisor, :start_link, [[]]},
+        {ConduitSQS.PollerSupervisor, {ConduitSQS.PollerSupervisor, :start_link,
+          [%{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: ["conduitsqs-test"]]}}, []]},
           :permanent, :infinity, :supervisor, [ConduitSQS.PollerSupervisor]},
         {ConduitSQS.WorkerGroupSupervisor, {ConduitSQS.WorkerGroupSupervisor, :start_link, [[]]},
           :permanent, :infinity, :supervisor, [ConduitSQS.WorkerGroupSupervisor]}

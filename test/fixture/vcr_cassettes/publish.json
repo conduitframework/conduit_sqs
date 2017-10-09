@@ -1,0 +1,33 @@
+[
+  {
+    "request": {
+      "body": "Action=SendMessage&MessageAttribute.1.Name=attempts&MessageAttribute.1.Value.DataType=Number&MessageAttribute.1.Value.StringValue=1&MessageAttribute.2.Name=ignore&MessageAttribute.2.Value.DataType=Number.boolean&MessageAttribute.2.Value.StringValue=1&MessageAttribute.3.Name=created_by&MessageAttribute.3.Value.DataType=String&MessageAttribute.3.Value.StringValue=test&MessageAttribute.4.Name=correlation_id&MessageAttribute.4.Value.DataType=String&MessageAttribute.4.Value.StringValue=1&MessageBody=hi",
+      "headers": {
+        "Authorization": "***",
+        "host": "sqs.us-east-1.amazonaws.com",
+        "x-amz-date": "***",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "method": "post",
+      "options": {
+        "with_body": "true",
+        "recv_timeout": 30000
+      },
+      "request_body": "",
+      "url": "https://sqs.us-east-1.amazonaws.com/conduit-test"
+    },
+    "response": {
+      "body": "<?xml version=\"1.0\"?><SendMessageResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageResult><MessageId>591a8d9f-7583-4564-b880-8eb402a5c541</MessageId><MD5OfMessageBody>49f68a5c8493ec2c0bf489821c21fc3b</MD5OfMessageBody><MD5OfMessageAttributes>b005563a2fd67fbf2895879f0a08c2b5</MD5OfMessageAttributes></SendMessageResult><ResponseMetadata><RequestId>eb1c1221-dcb3-5a86-bee7-4074017a19a8</RequestId></ResponseMetadata></SendMessageResponse>",
+      "headers": {
+        "Server": "Server",
+        "Date": "Mon, 09 Oct 2017 20:26:50 GMT",
+        "Content-Type": "text/xml",
+        "Content-Length": "459",
+        "Connection": "keep-alive",
+        "x-amzn-RequestId": "eb1c1221-dcb3-5a86-bee7-4074017a19a8"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]
