@@ -18,13 +18,13 @@ defmodule ConduitSQS.PollerSupervisorTest do
 
       assert child_specs == [
         {{ConduitSQS.Poller, 0}, {ConduitSQS.Poller, :start_link,
-          ["conduitsqs-test", [from: ["conduitsqs-test"]]]},
+          ["conduitsqs-test", [from: ["conduitsqs-test"]], []]},
           :permanent, 5000, :worker, [ConduitSQS.Poller]},
         {{ConduitSQS.Poller, 1}, {ConduitSQS.Poller, :start_link,
-          ["conduitsqs-test2", [from: ["conduitsqs-test2", "conduitsqs-test3"]]]},
+          ["conduitsqs-test2", [from: ["conduitsqs-test2", "conduitsqs-test3"]], []]},
           :permanent, 5000, :worker, [ConduitSQS.Poller]},
         {{ConduitSQS.Poller, 2}, {ConduitSQS.Poller, :start_link,
-          ["conduitsqs-test3", [from: ["conduitsqs-test2", "conduitsqs-test3"]]]},
+          ["conduitsqs-test3", [from: ["conduitsqs-test2", "conduitsqs-test3"]], []]},
           :permanent, 5000, :worker, [ConduitSQS.Poller]}
       ]
     end

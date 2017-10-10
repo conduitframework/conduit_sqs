@@ -60,6 +60,7 @@ defmodule ConduitSQS.Mixfile do
       {:ex_aws, "~> 1.1"},
       {:hackney, "~> 1.9"},
       {:sweet_xml, "~> 0.6"},
+      {:gen_stage, "~> 0.12.2"},
       {:injex, "~> 1.0"},
       {:ex_doc, "~> 0.14", only: :dev},
       {:dialyxir, "~> 0.4", only: :dev},

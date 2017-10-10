@@ -17,8 +17,8 @@ defmodule ConduitSQS.PollerSupervisor do
         Enum.map(opts[:from], &{&1, opts})
       end)
       |> Enum.with_index()
-      |> Enum.map(fn {{queue, opts}, index} ->
-        worker(ConduitSQS.Poller, [queue, opts], id: {ConduitSQS.Poller, index})
+      |> Enum.map(fn {{queue, subscriber_opts}, index} ->
+        worker(ConduitSQS.Poller, [queue, subscriber_opts, opts], id: {ConduitSQS.Poller, index})
       end)
 
     supervise(children, strategy: :one_for_one)
