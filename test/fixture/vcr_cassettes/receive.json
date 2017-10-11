@@ -1,0 +1,33 @@
+[
+  {
+    "request": {
+      "body": "Action=ReceiveMessage&AttributeName.1=All&MaxNumberOfMessages=10&MessageAttributeNames=All",
+      "headers": {
+        "Authorization": "***",
+        "host": "sqs.us-east-1.amazonaws.com",
+        "x-amz-date": "***",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "method": "post",
+      "options": {
+        "with_body": "true",
+        "recv_timeout": 30000
+      },
+      "request_body": "",
+      "url": "https://sqs.us-east-1.amazonaws.com/conduit-test"
+    },
+    "response": {
+      "body": "<?xml version=\"1.0\"?><ReceiveMessageResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><ReceiveMessageResult><Message><MessageId>73a1f59e-4404-4e65-949a-898ff15a115f</MessageId><ReceiptHandle>AQEB4BiZXKTjxdeQk7+wqec6+YkhezHKhYLKOCZG6yluPBsi1bhlqGv/i2AAmHETKELmAvwlgJE6j7DJwaarlFQiG0uVv82d2b/GyVkqOwE82NFJNgB+CEmT/1ESBocQYO2SyUmWk6XLOOiyZqgsJ/7hzIeNnbrMn/OWaX325M1BPu4K3bgHGhognKXAjtpA9yiyKsGp2kp2noeXj6nFMMp6r/eZbSORJOZRuVvbMkrd/AyjZxF2rVaVNtvR9NJreq1tyE/o6hwBzE8BPQTPcPQAx+EyDP0SFlHc2F0Aqo9m9zp6LKIcN6aKe874Re1rmDXijJrdBnkBQYzbrGCXf15nSwBmJ4Dv8/o24VyqFNkIpcDw61tAsb1nTFW26ccK7yFW</ReceiptHandle><MD5OfBody>49f68a5c8493ec2c0bf489821c21fc3b</MD5OfBody><MD5OfMessageAttributes>b005563a2fd67fbf2895879f0a08c2b5</MD5OfMessageAttributes><Body>hi</Body><Attribute><Name>SenderId</Name><Value>AIDAI4CGXQJHPWYLAP2OK</Value></Attribute><Attribute><Name>ApproximateFirstReceiveTimestamp</Name><Value>1507763212356</Value></Attribute><Attribute><Name>ApproximateReceiveCount</Name><Value>1</Value></Attribute><Attribute><Name>SentTimestamp</Name><Value>1507763179407</Value></Attribute><MessageAttribute><Name>attempts</Name><Value><StringValue>1</StringValue><DataType>Number</DataType></Value></MessageAttribute><MessageAttribute><Name>correlation_id</Name><Value><StringValue>1</StringValue><DataType>String</DataType></Value></MessageAttribute><MessageAttribute><Name>created_by</Name><Value><StringValue>test</StringValue><DataType>String</DataType></Value></MessageAttribute><MessageAttribute><Name>ignore</Name><Value><StringValue>1</StringValue><DataType>Number.boolean</DataType></Value></MessageAttribute></Message></ReceiveMessageResult><ResponseMetadata><RequestId>4c62b197-cedf-5e87-9813-e3cf689311b3</RequestId></ResponseMetadata></ReceiveMessageResponse>",
+      "headers": {
+        "Server": "Server",
+        "Date": "Wed, 11 Oct 2017 23:06:52 GMT",
+        "Content-Type": "text/xml",
+        "Content-Length": "1767",
+        "Connection": "keep-alive",
+        "x-amzn-RequestId": "4c62b197-cedf-5e87-9813-e3cf689311b3"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]

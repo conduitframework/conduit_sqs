@@ -49,4 +49,29 @@ defmodule ConduitSQS.SQSTest do
       end
     end
   end
+
+  describe "get_messages/4" do
+    test "returns a list of messages with attributes mapped to conduit attributes and headers", %{opts: config} do
+      use_cassette "receive" do
+        assert [%Message{
+          body: "hi",
+          correlation_id: "1",
+          created_by: "test",
+          headers: %{
+            "approximate_first_receive_timestamp" => _,
+            "approximate_receive_count" => 1,
+            "attempts" => 1,
+            "ignore" => true,
+            "md5_of_body" => _,
+            "message_id" => _,
+            "receipt_handle" => _,
+            "request_id" => _,
+            "sender_id" => _,
+            "sent_timestamp" => _
+          },
+          source: "conduit-test"
+        }] = SQS.get_messages("conduit-test", 10, [], config)
+      end
+    end
+  end
 end

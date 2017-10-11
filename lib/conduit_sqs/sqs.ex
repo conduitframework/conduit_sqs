@@ -2,7 +2,7 @@ defmodule ConduitSQS.SQS do
   require Logger
   alias ExAws.SQS, as: Client
   alias Conduit.Message
-  import Conduit.Message
+  alias ConduitSQS.SQS.Options
 
   def setup_topology(topology, opts) do
     Enum.map(topology, &setup(&1, opts))
@@ -20,74 +20,25 @@ defmodule ConduitSQS.SQS do
 
   def publish(%Message{body: body} = message, config, opts) do
     message.destination
-    |> Client.send_message(body, get_options(message, opts))
+    |> Client.send_message(body, Options.from(message, opts))
     |> ExAws.request!(config)
     |> get_in([:body])
   end
 
-  defp get_options(message, opts) do
-    [{:message_attributes, get_message_attributes(message)} | opts]
-    |> put_present_option(:message_deduplication_id, get_header(message, "deduplication_id"))
-    |> put_present_option(:group_id, get_header(message, "group_id"))
+  def get_messages(queue, max_number_of_messages, subscriber_opts, adapter_opts) do
+    sub_opts = build_subsriber_opts(max_number_of_messages, subscriber_opts)
+
+    queue
+    |> Client.receive_message(sub_opts)
+    |> ExAws.request!(adapter_opts)
+    |> get_in([:body])
+    |> __MODULE__.Message.to_conduit_messages(queue)
   end
 
-  @attributes ~w(
-    content_type
-    content_encoding
-    created_by
-    created_at
-    message_id
-    correlation_id
-    user_id
-  )a
-  defp get_message_attributes(message) do
-    header_attributes =
-      message.headers
-      |> Enum.filter(fn
-        {_, nil} -> false
-        _ -> true
-      end)
-      |> Enum.map(fn {name, value} ->
-        build_sqs_attribute(name, value)
-      end)
-
-    attributes =
-      @attributes
-      |> Enum.filter(&Map.get(message, &1))
-      |> Enum.map(fn attribute ->
-        attribute
-        |> Atom.to_string()
-        |> build_sqs_attribute(Map.get(message, attribute))
-      end)
-
-    header_attributes ++ attributes
-  end
-
-  defp build_sqs_attribute(name, value) when is_boolean(value) do
-    build_sqs_attribute(name, :number, "boolean", if(value, do: 1, else: 0))
-  end
-  defp build_sqs_attribute(name, value) when is_number(value) do
-    build_sqs_attribute(name, :number, nil, value)
-  end
-  defp build_sqs_attribute(name, value) when is_binary(value) do
-    if String.printable?(value) do
-      build_sqs_attribute(name, :string, nil, value)
-    else
-      build_sqs_attribute(name, :binary, nil, value)
-    end
-  end
-
-  defp build_sqs_attribute(name, type, nil, value) do
-    %{name: name, data_type: type, value: value}
-  end
-  defp build_sqs_attribute(name, type, custom_type, value) do
-    name
-    |> build_sqs_attribute(type, nil, value)
-    |> Map.put(:custom_type, custom_type)
-  end
-
-  defp put_present_option(options, _name, nil), do: options
-  defp put_present_option(options, name, value) do
-    Keyword.put(options, name, value)
+  defp build_subsriber_opts(max_number_of_messages, subscriber_opts) do
+    subscriber_opts
+    |> Keyword.put(:max_number_of_messages, max_number_of_messages)
+    |> Keyword.put_new(:attribute_names, :all)
+    |> Keyword.put_new(:message_attribute_names, :all)
   end
 end

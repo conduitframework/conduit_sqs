@@ -43,12 +43,12 @@ defmodule ConduitSQS.PollerTest do
 
     test "when all demand is handled, it produces messages and updates demand" do
       override Poller, sqs: SQSEqual do
-        state = %Poller.State{queue: "conduitsqs-test", subscriber_opts: [fetch_limit: 5], adapter_opts: [], demand: 5}
+        state = %Poller.State{queue: "conduitsqs-test", subscriber_opts: [max_number_of_messages: 5], adapter_opts: [], demand: 5}
 
         assert Poller.handle_info(:get_messages, state) == {
           :noreply,
           [%Message{}, %Message{}, %Message{}, %Message{}, %Message{}],
-          %Poller.State{queue: "conduitsqs-test", subscriber_opts: [fetch_limit: 5], adapter_opts: [], demand: 0}
+          %Poller.State{queue: "conduitsqs-test", subscriber_opts: [max_number_of_messages: 5], adapter_opts: [], demand: 0}
         }
 
         refute_received :get_messages
@@ -57,12 +57,12 @@ defmodule ConduitSQS.PollerTest do
 
     test "when demand equal to the fetch limit is handled, it produces messags, updates demand, and schedules immediately" do
       override Poller, sqs: SQSEqual do
-        state = %Poller.State{queue: "conduitsqs-test", subscriber_opts: [fetch_limit: 5], adapter_opts: [], demand: 10}
+        state = %Poller.State{queue: "conduitsqs-test", subscriber_opts: [max_number_of_messages: 5], adapter_opts: [], demand: 10}
 
         assert Poller.handle_info(:get_messages, state) == {
           :noreply,
           [%Message{}, %Message{}, %Message{}, %Message{}, %Message{}],
-          %Poller.State{queue: "conduitsqs-test", subscriber_opts: [fetch_limit: 5], adapter_opts: [], demand: 5}
+          %Poller.State{queue: "conduitsqs-test", subscriber_opts: [max_number_of_messages: 5], adapter_opts: [], demand: 5}
         }
 
         assert_received :get_messages
@@ -76,12 +76,12 @@ defmodule ConduitSQS.PollerTest do
     end
     test "when demand less than the fetch limit is handled, it produces messags, updates demand, and schedules later" do
       override Poller, sqs: SQSLess do
-        state = %Poller.State{queue: "conduitsqs-test", subscriber_opts: [fetch_limit: 5], adapter_opts: [], demand: 10}
+        state = %Poller.State{queue: "conduitsqs-test", subscriber_opts: [max_number_of_messages: 5], adapter_opts: [], demand: 10}
 
         assert Poller.handle_info(:get_messages, state) == {
           :noreply,
           [%Message{}, %Message{}, %Message{}],
-          %Poller.State{queue: "conduitsqs-test", subscriber_opts: [fetch_limit: 5], adapter_opts: [], demand: 7}
+          %Poller.State{queue: "conduitsqs-test", subscriber_opts: [max_number_of_messages: 5], adapter_opts: [], demand: 7}
         }
 
         assert_receive :get_messages, 300
