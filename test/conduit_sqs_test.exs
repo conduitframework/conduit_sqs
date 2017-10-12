@@ -35,7 +35,8 @@ defmodule ConduitSQSTest do
         {ConduitSQS.PollerSupervisor, {ConduitSQS.PollerSupervisor, :start_link,
           [%{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: ["conduitsqs-test"]]}}, []]},
           :permanent, :infinity, :supervisor, [ConduitSQS.PollerSupervisor]},
-        {ConduitSQS.WorkerGroupSupervisor, {ConduitSQS.WorkerGroupSupervisor, :start_link, [[]]},
+        {ConduitSQS.WorkerGroupSupervisor, {ConduitSQS.WorkerGroupSupervisor, :start_link,
+          [ConduitSQSTest.Broker, %{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: ["conduitsqs-test"]]}}, []]},
           :permanent, :infinity, :supervisor, [ConduitSQS.WorkerGroupSupervisor]}
       ]
     end

@@ -11,10 +11,10 @@ defmodule ConduitSQS.PollerSupervisorTest do
       []
     ]
     test "returns child specs for each queue" do
-      assert {:ok, {adapter_opts, child_specs}} = PollerSupervisor.init(@args)
+      assert {:ok, {sup_opts, child_specs}} = PollerSupervisor.init(@args)
 
       # {strategy, max_restarts, max_seconds}
-      assert adapter_opts == {:one_for_one, 3, 5}
+      assert sup_opts == {:one_for_one, 3, 5}
 
       assert child_specs == [
         {{ConduitSQS.Poller, 0}, {ConduitSQS.Poller, :start_link,

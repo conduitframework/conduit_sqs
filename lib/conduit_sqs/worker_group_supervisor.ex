@@ -1,16 +1,22 @@
 defmodule ConduitSQS.WorkerGroupSupervisor do
   use Supervisor
 
-  def start_link(opts) do
-    Supervisor.start_link(__MODULE__, [opts], name: __MODULE__)
+  def start_link(broker, subscribers, opts) do
+    Supervisor.start_link(__MODULE__, [broker, subscribers, opts], name: __MODULE__)
   end
 
-  def init([opts]) do
+  def init([broker, subscribers, opts]) do
     import Supervisor.Spec
 
-    children = [
-
-    ]
+    children =
+      subscribers
+      |> Enum.map(fn {name, {subscriber, sub_opts}} ->
+        supervisor(
+          ConduitSQS.WorkerSupervisor,
+          [broker, name, subscriber, sub_opts, opts],
+          id: {ConduitSQS.WorkerSupervisor, subscriber}
+        )
+      end)
 
     supervise(children, strategy: :one_for_one)
   end
