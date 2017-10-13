@@ -10,11 +10,11 @@ defmodule ConduitSQS.WorkerGroupSupervisor do
 
     children =
       subscribers
-      |> Enum.map(fn {name, {subscriber, sub_opts}} ->
+      |> Enum.map(fn {name, {_, sub_opts}} ->
         supervisor(
           ConduitSQS.WorkerSupervisor,
-          [broker, name, subscriber, sub_opts, opts],
-          id: {ConduitSQS.WorkerSupervisor, subscriber}
+          [broker, name, sub_opts, opts],
+          id: {ConduitSQS.WorkerSupervisor, name}
         )
       end)
 

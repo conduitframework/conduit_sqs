@@ -1,11 +1,11 @@
 defmodule ConduitSQS.WorkerSupervisor do
   use Supervisor
 
-  def start_link(broker, name, subscriber, sub_opts, opts) do
-    Supervisor.start_link(__MODULE__, [broker, name, subscriber, sub_opts, opts], name: __MODULE__)
+  def start_link(broker, name, sub_opts, opts) do
+    Supervisor.start_link(__MODULE__, [broker, name, sub_opts, opts], name: __MODULE__)
   end
 
-  def init([broker, name, subscriber, sub_opts, opts] = args) do
+  def init([broker, name, sub_opts, opts]) do
     import Supervisor.Spec
 
     worker_pool_size = Keyword.get(sub_opts, :worker_pool_size, Keyword.get(opts, :worker_pool_size, 5))
@@ -13,7 +13,7 @@ defmodule ConduitSQS.WorkerSupervisor do
     children =
       1..worker_pool_size
       |> Enum.map(fn num ->
-        worker(ConduitSQS.Worker, args, id: {ConduitSQS.Worker, num})
+        worker(ConduitSQS.Worker, [broker, name, opts], id: {ConduitSQS.Worker, num})
       end)
 
     supervise(children, strategy: :one_for_one)

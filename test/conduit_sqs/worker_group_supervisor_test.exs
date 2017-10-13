@@ -14,11 +14,11 @@ defmodule ConduitSQS.WorkerGroupSupervisorTest do
       assert sup_opts == {:one_for_one, 3, 5}
 
       assert child_specs == [
-        {{ConduitSQS.WorkerSupervisor, Test},
-          {ConduitSQS.WorkerSupervisor, :start_link, [Broker, :test, Test, [], []]},
+        {{ConduitSQS.WorkerSupervisor, :test},
+          {ConduitSQS.WorkerSupervisor, :start_link, [Broker, :test, [], []]},
           :permanent, :infinity, :supervisor, [ConduitSQS.WorkerSupervisor]},
-        {{ConduitSQS.WorkerSupervisor, Test2},
-          {ConduitSQS.WorkerSupervisor, :start_link, [Broker, :test2, Test2, [], []]},
+        {{ConduitSQS.WorkerSupervisor, :test2},
+          {ConduitSQS.WorkerSupervisor, :start_link, [Broker, :test2, [], []]},
           :permanent, :infinity, :supervisor, [ConduitSQS.WorkerSupervisor]}
       ]
     end

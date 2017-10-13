@@ -1,5 +1,6 @@
 #stroke: #aaaaaa
 
+[ConduitSQS] <- [Registry]
 [ConduitSQS] <- [Setup]
 [ConduitSQS] <- * [PollerSupervisor]
 [PollerSupervisor] <- * [Poller]
