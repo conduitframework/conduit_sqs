@@ -1,5 +1,7 @@
 defmodule ConduitSQS.Worker do
   use GenStage
+  import Injex
+  inject :message_processor, ConduitSQS.MessageProcessor
 
   defmodule State do
     defstruct [:broker, :name, :adapter_opts]
@@ -14,11 +16,11 @@ defmodule ConduitSQS.Worker do
       broker: broker,
       name: name,
       adapter_opts: opts
-    }, subscriber_to: []}
+    }, subscribe_to: []}
   end
 
-  def handle_events(messages, _from, %State{broker: broker, name: name} = state) do
-    Enum.each(messages, &broker.receives(name, &1))
+  def handle_events(messages, _from, %State{broker: broker, name: name, adapter_opts: opts} = state) do
+    message_processor().process(broker, name, messages, opts)
 
     {:noreply, [], state}
   end

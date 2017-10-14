@@ -3,6 +3,7 @@ defmodule ConduitSQS.SQS do
   alias ExAws.SQS, as: Client
   alias Conduit.Message
   alias ConduitSQS.SQS.Options
+  import Conduit.Message
 
   def setup_topology(topology, opts) do
     Enum.map(topology, &setup(&1, opts))
@@ -40,5 +41,13 @@ defmodule ConduitSQS.SQS do
     |> Keyword.put(:max_number_of_messages, max_number_of_messages)
     |> Keyword.put_new(:attribute_names, :all)
     |> Keyword.put_new(:message_attribute_names, :all)
+  end
+
+  def ack_messages(message_batches, opts) do
+    Enum.each(message_batches, fn {queue, delete_message_items} ->
+      queue
+      |> Client.delete_message_batch(delete_message_items)
+      |> ExAws.request(opts)
+    end)
   end
 end
