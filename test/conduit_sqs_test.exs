@@ -19,7 +19,7 @@ defmodule ConduitSQSTest do
     test "return the child specifications for the options passed" do
       broker = Broker
       subscribers = %{
-        conduitsqs_test: {Subscriber, [from: ["conduitsqs-test"]]}
+        conduitsqs_test: {Subscriber, [from: "conduitsqs-test"]}
       }
       topology = [
         {:queue, "conduitsqs-test", []}
@@ -33,10 +33,10 @@ defmodule ConduitSQSTest do
         {ConduitSQS.Setup, {ConduitSQS.Setup, :start_link, [[{:queue, "conduitsqs-test", []}], []]},
           :transient, 5000, :worker, [ConduitSQS.Setup]},
         {ConduitSQS.PollerSupervisor, {ConduitSQS.PollerSupervisor, :start_link,
-          [%{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: ["conduitsqs-test"]]}}, []]},
+          [%{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: "conduitsqs-test"]}}, []]},
           :permanent, :infinity, :supervisor, [ConduitSQS.PollerSupervisor]},
         {ConduitSQS.WorkerGroupSupervisor, {ConduitSQS.WorkerGroupSupervisor, :start_link,
-          [ConduitSQSTest.Broker, %{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: ["conduitsqs-test"]]}}, []]},
+          [ConduitSQSTest.Broker, %{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: "conduitsqs-test"]}}, []]},
           :permanent, :infinity, :supervisor, [ConduitSQS.WorkerGroupSupervisor]}
       ]
     end
