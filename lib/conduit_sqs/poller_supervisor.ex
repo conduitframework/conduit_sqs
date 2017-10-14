@@ -13,8 +13,8 @@ defmodule ConduitSQS.PollerSupervisor do
 
     children =
       subscribers
-      |> Enum.flat_map(fn {_name, {_subscriber, opts}} ->
-        Enum.map(opts[:from], &{&1, opts})
+      |> Enum.map(fn {_name, {_subscriber, opts}} ->
+        {opts[:from], opts}
       end)
       |> Enum.with_index()
       |> Enum.map(fn {{queue, subscriber_opts}, index} ->
