@@ -19,7 +19,8 @@ defmodule ConduitSQS.Worker do
       name: name,
       adapter_opts: opts
     }, subscribe_to: [
-      {:via, ConduitSQS.registry_name(broker), {ConduitSQS.Poller, name}}
+      # TODO: Make max demand and min demand configurable
+      {{:via, ConduitSQS.registry_name(broker), {ConduitSQS.Poller, name}}, []}
     ]}
   end
 
