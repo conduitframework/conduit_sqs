@@ -1,14 +1,14 @@
 defmodule ConduitSQS.PollerSupervisor do
   use Supervisor
 
-  def start_link(subscribers, opts) do
-    Supervisor.start_link(__MODULE__, [subscribers, opts], name: __MODULE__)
+  def start_link(broker, subscribers, opts) do
+    Supervisor.start_link(__MODULE__, [broker, subscribers, opts], name: __MODULE__)
   end
 
   # %{
   #   conduitsqs_test: {ConduitSQSTest.Subscriber, [from: ["conduitsqs-test"]]}
   # },
-  def init([subscribers, opts]) do
+  def init([broker, subscribers, opts]) do
     import Supervisor.Spec
 
     children =
@@ -18,7 +18,7 @@ defmodule ConduitSQS.PollerSupervisor do
       end)
       |> Enum.with_index()
       |> Enum.map(fn {{queue, subscriber_opts}, index} ->
-        worker(ConduitSQS.Poller, [queue, subscriber_opts, opts], id: {ConduitSQS.Poller, index})
+        worker(ConduitSQS.Poller, [broker, queue, subscriber_opts, opts], id: {ConduitSQS.Poller, index})
       end)
 
     supervise(children, strategy: :one_for_one)

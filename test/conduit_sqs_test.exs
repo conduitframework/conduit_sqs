@@ -29,16 +29,44 @@ defmodule ConduitSQSTest do
       # {strategy, max_restarts, max_seconds}
       assert adapter_opts == {:one_for_one, 3, 5}
 
-      assert child_specs == [
-        {ConduitSQS.Setup, {ConduitSQS.Setup, :start_link, [[{:queue, "conduitsqs-test", []}], []]},
-          :transient, 5000, :worker, [ConduitSQS.Setup]},
-        {ConduitSQS.PollerSupervisor, {ConduitSQS.PollerSupervisor, :start_link,
-          [%{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: "conduitsqs-test"]}}, []]},
-          :permanent, :infinity, :supervisor, [ConduitSQS.PollerSupervisor]},
-        {ConduitSQS.WorkerGroupSupervisor, {ConduitSQS.WorkerGroupSupervisor, :start_link,
-          [ConduitSQSTest.Broker, %{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: "conduitsqs-test"]}}, []]},
-          :permanent, :infinity, :supervisor, [ConduitSQS.WorkerGroupSupervisor]}
-      ]
+      assert [
+        registry_supervisor,
+        setup_worker,
+        poller_supervisor,
+        worker_group_supervisor
+      ] = child_specs
+
+      assert registry_supervisor == {
+        Registry,
+        {Registry, :start_link, [[keys: :unique, name: ConduitSQSTest.Broker.Registry]]},
+        :permanent, :infinity, :supervisor, [Registry]
+      }
+
+      assert setup_worker == {
+        ConduitSQS.Setup,
+        {ConduitSQS.Setup, :start_link, [[{:queue, "conduitsqs-test", []}], []]},
+        :transient, 5000, :worker, [ConduitSQS.Setup]
+      }
+
+      assert poller_supervisor == {
+        ConduitSQS.PollerSupervisor,
+        {ConduitSQS.PollerSupervisor, :start_link, [
+          ConduitSQSTest.Broker,
+          %{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: "conduitsqs-test"]}},
+          []]
+        },
+        :permanent, :infinity, :supervisor, [ConduitSQS.PollerSupervisor]
+      }
+
+      assert worker_group_supervisor == {
+        ConduitSQS.WorkerGroupSupervisor,
+        {ConduitSQS.WorkerGroupSupervisor, :start_link, [
+          ConduitSQSTest.Broker,
+          %{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: "conduitsqs-test"]}},
+          []
+        ]},
+        :permanent, :infinity, :supervisor, [ConduitSQS.WorkerGroupSupervisor]
+      }
     end
   end
 end

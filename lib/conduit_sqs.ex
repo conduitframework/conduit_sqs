@@ -13,8 +13,9 @@ defmodule ConduitSQS do
     import Supervisor.Spec
 
     children = [
+      supervisor(Registry, [[keys: :unique, name: registry_name(broker)]]),
       worker(ConduitSQS.Setup, [topology, opts], restart: :transient),
-      supervisor(ConduitSQS.PollerSupervisor, [subscribers, opts]),
+      supervisor(ConduitSQS.PollerSupervisor, [broker, subscribers, opts]),
       supervisor(ConduitSQS.WorkerGroupSupervisor, [broker, subscribers, opts])
     ]
 
@@ -23,5 +24,9 @@ defmodule ConduitSQS do
 
   def publish(message, config, opts) do
     SQS.publish(message, config, opts)
+  end
+
+  def registry_name(broker) do
+    Module.concat([broker, Registry])
   end
 end

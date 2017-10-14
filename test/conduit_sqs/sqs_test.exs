@@ -77,6 +77,7 @@ defmodule ConduitSQS.SQSTest do
 
   describe "ack_messages/2" do
     test "deletes acked messages and ignore nacked messages" do
+      #TODO: Full integration test?
     end
   end
 end
