@@ -7,8 +7,10 @@ defmodule ConduitSQS.Worker do
     defstruct [:broker, :name, :adapter_opts]
   end
 
-  def start_link(broker, name, opts) do
-    GenStage.start_link(__MODULE__, [broker, name, opts])
+  def start_link(broker, subscription_name, opts) do
+    name = {:via, ConduitSQS.registry_name(broker), {__MODULE__, subscription_name}}
+
+    GenStage.start_link(__MODULE__, [broker, subscription_name, opts], name: name)
   end
 
   def init([broker, name, opts]) do
@@ -16,7 +18,9 @@ defmodule ConduitSQS.Worker do
       broker: broker,
       name: name,
       adapter_opts: opts
-    }, subscribe_to: []}
+    }, subscribe_to: [
+      {:via, ConduitSQS.registry_name(broker), {ConduitSQS.Poller, name}}
+    ]}
   end
 
   def handle_events(messages, _from, %State{broker: broker, name: name, adapter_opts: opts} = state) do

@@ -13,12 +13,12 @@ defmodule ConduitSQS.PollerSupervisor do
 
     children =
       subscribers
-      |> Enum.map(fn {_name, {_subscriber, opts}} ->
-        {opts[:from], opts}
+      |> Enum.map(fn {name, {_subscriber, opts}} ->
+        {name, opts[:from], opts}
       end)
       |> Enum.with_index()
-      |> Enum.map(fn {{queue, subscriber_opts}, index} ->
-        worker(ConduitSQS.Poller, [broker, queue, subscriber_opts, opts], id: {ConduitSQS.Poller, index})
+      |> Enum.map(fn {{name, queue, subscriber_opts}, index} ->
+        worker(ConduitSQS.Poller, [broker, name, queue, subscriber_opts, opts], id: {ConduitSQS.Poller, index})
       end)
 
     supervise(children, strategy: :one_for_one)
