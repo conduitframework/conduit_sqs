@@ -10,10 +10,10 @@ defmodule ConduitSQS.WorkerSupervisorTest do
 
       assert child_specs == [
         {{ConduitSQS.Worker, 1},
-          {ConduitSQS.Worker, :start_link, [Broker, :test, [worker_pool_size: 2]]},
+          {ConduitSQS.Worker, :start_link, [Broker, :test, 1, [worker_pool_size: 2]]},
           :permanent, 5000, :worker, [ConduitSQS.Worker]},
         {{ConduitSQS.Worker, 2},
-          {ConduitSQS.Worker, :start_link, [Broker, :test, [worker_pool_size: 2]]},
+          {ConduitSQS.Worker, :start_link, [Broker, :test, 2, [worker_pool_size: 2]]},
           :permanent, 5000, :worker, [ConduitSQS.Worker]}
       ]
     end

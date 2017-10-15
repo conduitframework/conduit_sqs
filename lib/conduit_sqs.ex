@@ -12,6 +12,8 @@ defmodule ConduitSQS do
     Logger.info("SQS Adapter started!")
     import Supervisor.Spec
 
+    create_queue_table(broker)
+
     children = [
       supervisor(Registry, [[keys: :unique, name: registry_name(broker)]]),
       worker(ConduitSQS.Setup, [topology, opts], restart: :transient),
@@ -26,7 +28,18 @@ defmodule ConduitSQS do
     SQS.publish(message, config, opts)
   end
 
+  @doc false
   def registry_name(broker) do
     Module.concat([broker, Registry])
+  end
+
+  def queue_table_name(broker) do
+    Module.concat([broker, QueueTableName])
+  end
+
+  defp create_queue_table(broker) do
+    broker
+    |> queue_table_name()
+    |> :ets.new([:set, :public, :named_table])
   end
 end

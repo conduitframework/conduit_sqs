@@ -13,7 +13,7 @@ defmodule ConduitSQS.WorkerTest do
           name: :name,
           adapter_opts: []
         },
-        subscribe_to: [{:via, Broker.Registry, {ConduitSQS.Poller, :name}}]
+        subscribe_to: [{{:via, Registry, {Broker.Registry, {ConduitSQS.Poller, :name}}}, []}]
       }
     end
   end

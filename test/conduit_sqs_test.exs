@@ -2,25 +2,13 @@ defmodule ConduitSQSTest do
   use ExUnit.Case
   doctest ConduitSQS
 
-  defmodule Broker do
-    use Conduit.Broker, otp_app: :conduit_sqs
-  end
-
-  defmodule Subscriber do
-    use Conduit.Subscriber
-
-    def perform(message, _opts) do
-      message
-    end
-  end
-
   describe "init/1" do
     @tag :capture_log
     test "return the child specifications for the options passed" do
       broker = Broker
-      subscribers = %{
-        conduitsqs_test: {Subscriber, [from: "conduitsqs-test"]}
-      }
+      subscribers = [
+        conduitsqs_test: [from: "conduitsqs-test"]
+      ]
       topology = [
         {:queue, "conduitsqs-test", []}
       ]
@@ -38,7 +26,7 @@ defmodule ConduitSQSTest do
 
       assert registry_supervisor == {
         Registry,
-        {Registry, :start_link, [[keys: :unique, name: ConduitSQSTest.Broker.Registry]]},
+        {Registry, :start_link, [[keys: :unique, name: Broker.Registry]]},
         :permanent, :infinity, :supervisor, [Registry]
       }
 
@@ -51,8 +39,8 @@ defmodule ConduitSQSTest do
       assert poller_supervisor == {
         ConduitSQS.PollerSupervisor,
         {ConduitSQS.PollerSupervisor, :start_link, [
-          ConduitSQSTest.Broker,
-          %{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: "conduitsqs-test"]}},
+          Broker,
+          [conduitsqs_test: [from: "conduitsqs-test"]],
           []]
         },
         :permanent, :infinity, :supervisor, [ConduitSQS.PollerSupervisor]
@@ -61,8 +49,8 @@ defmodule ConduitSQSTest do
       assert worker_group_supervisor == {
         ConduitSQS.WorkerGroupSupervisor,
         {ConduitSQS.WorkerGroupSupervisor, :start_link, [
-          ConduitSQSTest.Broker,
-          %{conduitsqs_test: {ConduitSQSTest.Subscriber, [from: "conduitsqs-test"]}},
+          Broker,
+          [conduitsqs_test: [from: "conduitsqs-test"]],
           []
         ]},
         :permanent, :infinity, :supervisor, [ConduitSQS.WorkerGroupSupervisor]

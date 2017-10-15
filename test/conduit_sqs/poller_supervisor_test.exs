@@ -5,10 +5,10 @@ defmodule ConduitSQS.PollerSupervisorTest do
   describe "init/1" do
     @args [
       Broker,
-      %{
-        conduitsqs_test: {ConduitSQSTest.Subscriber, [from: "conduitsqs-test"]},
-        conduitsqs_test2: {ConduitSQSTest.Subscriber, [from: "conduitsqs-test2"]}
-      },
+      [
+        conduitsqs_test: [from: "conduitsqs-test"],
+        conduitsqs_test2: [from: "conduitsqs-test2"]
+      ],
       []
     ]
     test "returns child specs for each queue" do

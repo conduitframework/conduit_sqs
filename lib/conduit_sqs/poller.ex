@@ -8,7 +8,7 @@ defmodule ConduitSQS.Poller do
   end
 
   def start_link(broker, subscription_name, queue, subscriber_opts, adapter_opts) do
-    name = {:via, ConduitSQS.registry_name(broker), {__MODULE__, subscription_name}}
+    name = {:via, Registry, {ConduitSQS.registry_name(broker), {__MODULE__, subscription_name}}}
 
     GenStage.start_link(__MODULE__, [queue, subscriber_opts, adapter_opts], name: name)
   end

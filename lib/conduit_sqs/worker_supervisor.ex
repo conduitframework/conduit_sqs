@@ -13,7 +13,7 @@ defmodule ConduitSQS.WorkerSupervisor do
     children =
       1..worker_pool_size
       |> Enum.map(fn num ->
-        worker(ConduitSQS.Worker, [broker, name, opts], id: {ConduitSQS.Worker, num})
+        worker(ConduitSQS.Worker, [broker, name, num, opts], id: {ConduitSQS.Worker, num})
       end)
 
     supervise(children, strategy: :one_for_one)

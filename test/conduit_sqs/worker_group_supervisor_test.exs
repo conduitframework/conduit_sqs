@@ -5,8 +5,8 @@ defmodule ConduitSQS.WorkerGroupSupervisorTest do
   describe "init/1" do
     test "returns child specs for each subscriber" do
       subscribers = %{
-        test: {Test, []},
-        test2: {Test2, []}
+        test: [],
+        test2: []
       }
       assert {:ok, {sup_opts, child_specs}} = WorkerGroupSupervisor.init([Broker, subscribers, []])
 

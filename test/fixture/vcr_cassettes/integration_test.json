@@ -1,0 +1,33 @@
+[
+  {
+    "request": {
+      "body": "Action=SendMessage&MessageBody=hi&To=subscription",
+      "headers": {
+        "Authorization": "***",
+        "host": "sqs.us-east-1.amazonaws.com",
+        "x-amz-date": "***",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "method": "post",
+      "options": {
+        "with_body": "true",
+        "recv_timeout": 30000
+      },
+      "request_body": "",
+      "url": "https://sqs.us-east-1.amazonaws.com/subscription"
+    },
+    "response": {
+      "body": "<?xml version=\"1.0\"?><ErrorResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><Error><Type>Sender</Type><Code>AWS.SimpleQueueService.NonExistentQueue</Code><Message>The specified queue does not exist for this wsdl version.</Message><Detail/></Error><RequestId>289afccb-942f-5d6f-88a5-ae96577db338</RequestId></ErrorResponse>",
+      "headers": {
+        "Server": "Server",
+        "Date": "Sun, 15 Oct 2017 20:12:02 GMT",
+        "Content-Type": "text/xml",
+        "Content-Length": "333",
+        "Connection": "keep-alive",
+        "x-amzn-RequestId": "289afccb-942f-5d6f-88a5-ae96577db338"
+      },
+      "status_code": 400,
+      "type": "ok"
+    }
+  }
+]
