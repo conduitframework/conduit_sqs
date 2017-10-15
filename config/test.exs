@@ -4,7 +4,7 @@ config :conduit, ConduitSQSTest,
   access_key_id: System.get_env("ACCESS_KEY_ID"),
   secret_access_key: System.get_env("SECRET_ACCESS_KEY")
 
-config :integration_test, ConduitSQSIntegrationTest.Broker,
+config :conduit_sqs, ConduitSQSIntegrationTest.Broker,
   access_key_id: System.get_env("ACCESS_KEY_ID"),
   secret_access_key: System.get_env("SECRET_ACCESS_KEY"),
   adapter: ConduitSQS

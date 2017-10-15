@@ -14,7 +14,7 @@ defmodule ConduitSQSIntegrationTest do
   end
 
   defmodule Broker do
-    use Conduit.Broker, otp_app: :integration_test
+    use Conduit.Broker, otp_app: :conduit_sqs
 
     configure do
       queue "subscription"
@@ -29,7 +29,7 @@ defmodule ConduitSQSIntegrationTest do
     end
   end
 
-
+  @tag :skip
   test "creates queue, publishes messages, and consumes them" do
     use_cassette "integration_test" do
       Process.register(self(), __MODULE__)

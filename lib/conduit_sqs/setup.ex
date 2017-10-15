@@ -1,25 +1,27 @@
 defmodule ConduitSQS.Setup do
   use GenServer
   import Injex
+  inject :meta, ConduitSQS.Meta
   inject :sqs, ConduitSQS.SQS
 
   defmodule State do
-    defstruct [:topology, :opts]
+    defstruct [:broker, :topology, :opts]
   end
 
-  def start_link(topology, opts) do
-    GenServer.start_link(__MODULE__, [topology, opts], name: __MODULE__)
+  def start_link(broker, topology, opts) do
+    GenServer.start_link(__MODULE__, [broker, topology, opts], name: __MODULE__)
   end
 
-  def init([topology, opts]) do
+  def init([broker, topology, opts]) do
     Process.send(self(), :setup_topology, [])
 
-    {:ok, %State{topology: topology, opts: opts}}
+    {:ok, %State{broker: broker, topology: topology, opts: opts}}
   end
 
-  def handle_info(:setup_topology, %State{topology: topology, opts: opts} = state) do
+  def handle_info(:setup_topology, %State{broker: broker, topology: topology, opts: opts} = state) do
     sqs().setup_topology(topology, opts)
+    meta().activate_pollers(broker)
 
-    {:stop, "topology setup", state}
+    {:stop, :normal, state}
   end
 end

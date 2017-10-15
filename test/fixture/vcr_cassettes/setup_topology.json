@@ -17,14 +17,14 @@
       "url": "https://sqs.us-east-1.amazonaws.com/"
     },
     "response": {
-      "body": "<?xml version=\"1.0\"?><CreateQueueResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><CreateQueueResult><QueueUrl>https://sqs.us-east-1.amazonaws.com/974419985843/conduit-test</QueueUrl></CreateQueueResult><ResponseMetadata><RequestId>5399d23b-5a1b-510d-901e-806e911b41f3</RequestId></ResponseMetadata></CreateQueueResponse>",
+      "body": "<?xml version=\"1.0\"?><CreateQueueResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><CreateQueueResult><QueueUrl>https://sqs.us-east-1.amazonaws.com/974419985843/conduit-test</QueueUrl></CreateQueueResult><ResponseMetadata><RequestId>73af023a-a8fa-539f-b48a-5067609ba3e2</RequestId></ResponseMetadata></CreateQueueResponse>",
       "headers": {
         "Server": "Server",
-        "Date": "Mon, 09 Oct 2017 19:06:40 GMT",
+        "Date": "Sun, 15 Oct 2017 20:33:37 GMT",
         "Content-Type": "text/xml",
         "Content-Length": "332",
         "Connection": "keep-alive",
-        "x-amzn-RequestId": "5399d23b-5a1b-510d-901e-806e911b41f3"
+        "x-amzn-RequestId": "73af023a-a8fa-539f-b48a-5067609ba3e2"
       },
       "status_code": 200,
       "type": "ok"

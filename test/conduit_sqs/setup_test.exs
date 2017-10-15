@@ -9,9 +9,15 @@ defmodule ConduitSQS.SetupTest do
     end
   end
 
+  defmodule Meta do
+    def activate_pollers(broker) do
+      send(self(), {:activate_pollers, broker})
+    end
+  end
+
   describe "init/1" do
     test "sends self message to setup topology" do
-      assert Setup.init([[], []]) == {:ok, %Setup.State{topology: [], opts: []}}
+      assert Setup.init([Broker, [], []]) == {:ok, %Setup.State{broker: Broker, topology: [], opts: []}}
 
       assert_received(:setup_topology)
     end
@@ -19,11 +25,12 @@ defmodule ConduitSQS.SetupTest do
 
   describe "handle_info/2" do
     test "sets up topology and stops" do
-      override(Setup, sqs: SQS) do
-        state = %Setup.State{topology: [], opts: []}
-        assert Setup.handle_info(:setup_topology, state) == {:stop, "topology setup", state}
+      override(Setup, sqs: SQS, meta: Meta) do
+        state = %Setup.State{broker: Broker, topology: [], opts: []}
+        assert Setup.handle_info(:setup_topology, state) == {:stop, :normal, state}
 
         assert_received({:setup_topology, [], []})
+        assert_received({:activate_pollers, Broker})
       end
     end
   end

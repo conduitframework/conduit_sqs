@@ -1,21 +1,25 @@
 defmodule ConduitSQS.Poller do
   use GenStage
   import Injex
+  inject :meta, ConduitSQS.Meta
   inject :sqs, ConduitSQS.SQS
 
   defmodule State do
-    defstruct [:queue, :subscriber_opts, :adapter_opts, demand: 0]
+    defstruct [:broker, :queue, :subscriber_opts, :adapter_opts, demand: 0]
   end
 
   def start_link(broker, subscription_name, queue, subscriber_opts, adapter_opts) do
     name = {:via, Registry, {ConduitSQS.registry_name(broker), {__MODULE__, subscription_name}}}
 
-    GenStage.start_link(__MODULE__, [queue, subscriber_opts, adapter_opts], name: name)
+    GenStage.start_link(__MODULE__, [broker, queue, subscriber_opts, adapter_opts], name: name)
   end
 
   @impl true
-  def init([queue, subscriber_opts, adapter_opts]) do
+  def init([broker, queue, subscriber_opts, adapter_opts]) do
+    Process.send(self(), :check_active, [])
+
     {:producer, %State{
+      broker: broker,
       queue: queue,
       subscriber_opts: subscriber_opts,
       adapter_opts: adapter_opts
@@ -51,5 +55,15 @@ defmodule ConduitSQS.Poller do
     end
 
     {:noreply, messages, %{state | demand: new_demand}}
+  end
+
+  @impl true
+  def handle_info(:check_active, %State{broker: broker} = state) do
+    case meta().pollers_active?(broker) do
+      true -> GenStage.demand(self(), :forward)
+      _ -> Process.send_after(self(), :check_active, 20)
+    end
+
+    {:noreply, [], state}
   end
 end

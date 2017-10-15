@@ -17,14 +17,14 @@
       "url": "https://sqs.us-east-1.amazonaws.com/conduit-test"
     },
     "response": {
-      "body": "<?xml version=\"1.0\"?><SendMessageResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageResult><MessageId>73a1f59e-4404-4e65-949a-898ff15a115f</MessageId><MD5OfMessageBody>49f68a5c8493ec2c0bf489821c21fc3b</MD5OfMessageBody><MD5OfMessageAttributes>b005563a2fd67fbf2895879f0a08c2b5</MD5OfMessageAttributes></SendMessageResult><ResponseMetadata><RequestId>44d95b0d-13a1-56ff-806e-0955b58a933a</RequestId></ResponseMetadata></SendMessageResponse>",
+      "body": "<?xml version=\"1.0\"?><SendMessageResponse xmlns=\"http://queue.amazonaws.com/doc/2012-11-05/\"><SendMessageResult><MessageId>9db801f4-9b13-4190-947c-672fee864a70</MessageId><MD5OfMessageBody>49f68a5c8493ec2c0bf489821c21fc3b</MD5OfMessageBody><MD5OfMessageAttributes>b005563a2fd67fbf2895879f0a08c2b5</MD5OfMessageAttributes></SendMessageResult><ResponseMetadata><RequestId>bc8c6177-252f-5403-951c-332aed4ec47e</RequestId></ResponseMetadata></SendMessageResponse>",
       "headers": {
         "Server": "Server",
-        "Date": "Wed, 11 Oct 2017 23:06:19 GMT",
+        "Date": "Sun, 15 Oct 2017 20:33:37 GMT",
         "Content-Type": "text/xml",
         "Content-Length": "459",
         "Connection": "keep-alive",
-        "x-amzn-RequestId": "44d95b0d-13a1-56ff-806e-0955b58a933a"
+        "x-amzn-RequestId": "bc8c6177-252f-5403-951c-332aed4ec47e"
       },
       "status_code": 200,
       "type": "ok"

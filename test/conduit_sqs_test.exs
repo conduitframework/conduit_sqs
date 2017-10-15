@@ -32,7 +32,7 @@ defmodule ConduitSQSTest do
 
       assert setup_worker == {
         ConduitSQS.Setup,
-        {ConduitSQS.Setup, :start_link, [[{:queue, "conduitsqs-test", []}], []]},
+        {ConduitSQS.Setup, :start_link, [Broker, [{:queue, "conduitsqs-test", []}], []]},
         :transient, 5000, :worker, [ConduitSQS.Setup]
       }
 

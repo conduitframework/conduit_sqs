@@ -59,7 +59,7 @@ defmodule ConduitSQS.SQSTest do
           created_by: "test",
           headers: %{
             "approximate_first_receive_timestamp" => _,
-            "approximate_receive_count" => 1,
+            "approximate_receive_count" => _,
             "attempts" => 1,
             "ignore" => true,
             "md5_of_body" => _,

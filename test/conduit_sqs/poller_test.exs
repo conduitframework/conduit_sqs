@@ -10,11 +10,13 @@ defmodule ConduitSQS.PollerTest do
       subscriber_opts = []
       adapter_opts = []
 
-      assert Poller.init([queue, subscriber_opts, adapter_opts]) == {
+      assert Poller.init([Broker, queue, subscriber_opts, adapter_opts]) == {
         :producer,
-        %Poller.State{queue: queue, subscriber_opts: subscriber_opts, adapter_opts: adapter_opts},
+        %Poller.State{broker: Broker, queue: queue, subscriber_opts: subscriber_opts, adapter_opts: adapter_opts},
         [demand: :accumulate]
       }
+
+      assert_received :check_active
     end
   end
 
@@ -34,7 +36,7 @@ defmodule ConduitSQS.PollerTest do
     end
   end
 
-  describe "handle_info/2" do
+  describe "handle_info/2 :get_messages" do
     defmodule SQSEqual do
       def get_messages(_queue, fetch_amount, _subscriber_opts, _adapter_opts) do
         Enum.map(1..fetch_amount, fn _ -> %Message{} end)
@@ -85,6 +87,36 @@ defmodule ConduitSQS.PollerTest do
         }
 
         assert_receive :get_messages, 300
+      end
+    end
+  end
+
+  describe "handle_info/2 :check_active" do
+    defmodule MetaActive do
+      def pollers_active?(_broker) do
+        true
+      end
+    end
+
+    test "when pollers should be active" do
+      override Poller, meta: MetaActive do
+        Poller.handle_info(:check_active, %Poller.State{})
+
+        assert_received {:"$gen_cast", {:"$demand", :forward}}
+      end
+    end
+
+    defmodule MetaInactive do
+      def pollers_active?(_broker) do
+        false
+      end
+    end
+
+    test "when pollers should not be active" do
+      override Poller, meta: MetaInactive do
+        Poller.handle_info(:check_active, %Poller.State{})
+
+        assert_receive :check_active, 40
       end
     end
   end
