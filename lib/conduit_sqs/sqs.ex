@@ -43,11 +43,9 @@ defmodule ConduitSQS.SQS do
     |> Keyword.put_new(:message_attribute_names, :all)
   end
 
-  def ack_messages(message_batches, opts) do
-    Enum.each(message_batches, fn {queue, delete_message_items} ->
-      queue
-      |> Client.delete_message_batch(delete_message_items)
-      |> ExAws.request(opts)
-    end)
+  def ack_messages(delete_message_items, queue, opts) do
+    queue
+    |> Client.delete_message_batch(delete_message_items)
+    |> ExAws.request(opts)
   end
 end

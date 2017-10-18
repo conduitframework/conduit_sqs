@@ -14,7 +14,7 @@ defmodule ConduitSQS.MessageProcessor do
     |> Enum.map(fn {:ack, message} ->
       %{id: get_header(message, "message_id"), receipt_handle: get_header(message, "receipt_handle")}
     end)
-    |> sqs().ack_messages(opts)
+    |> sqs().ack_messages(hd(messages).source, opts)
   end
 
   defp process_message(broker, name, message) do

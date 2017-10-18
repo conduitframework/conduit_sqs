@@ -40,8 +40,8 @@ defmodule ConduitSQS.MessageProcessorTest do
   end
 
   defmodule SQS do
-    def ack_messages(results, opts) do
-      send(self(), {:ack_messages, results, opts})
+    def ack_messages(results, queue, opts) do
+      send(self(), {:ack_messages, results, queue, opts})
     end
   end
 
@@ -56,7 +56,7 @@ defmodule ConduitSQS.MessageProcessorTest do
 
         MessageProcessor.process(Broker, :acker, [message], [])
 
-        assert_received {:ack_messages, [%{id: message_id, receipt_handle: receipt_handle}], []}
+        assert_received {:ack_messages, [%{id: message_id, receipt_handle: receipt_handle}], "ackable", []}
         assert get_header(message, "message_id") == message_id
         assert get_header(message, "receipt_handle") == receipt_handle
       end
@@ -70,7 +70,7 @@ defmodule ConduitSQS.MessageProcessorTest do
 
         MessageProcessor.process(Broker, :nacker, [message], [])
 
-        assert_received {:ack_messages, [], []}
+        assert_received {:ack_messages, [], "nackable", []}
       end
     end
 
@@ -82,7 +82,7 @@ defmodule ConduitSQS.MessageProcessorTest do
 
         MessageProcessor.process(Broker, :error, [message], [])
 
-        assert_received {:ack_messages, [], []}
+        assert_received {:ack_messages, [], "errorable", []}
       end
     end
   end

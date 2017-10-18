@@ -20,28 +20,39 @@ defmodule ConduitSQSIntegrationTest do
       queue "subscription"
     end
 
+    pipeline :out_tracking do
+      plug Conduit.Plug.LogOutgoing
+    end
+
+    pipeline :in_tracking do
+      plug Conduit.Plug.LogIncoming
+    end
+
     outgoing do
+      pipe_through [:out_tracking]
+
       publish :sub, to: "subscription"
     end
 
     incoming ConduitSQSIntegrationTest do
+      pipe_through [:in_tracking]
+
       subscribe :sub, :"Elixir.Subscriber", from: "subscription"
     end
   end
 
-  @tag :skip
+  @tag :capture_log
+  @tag :integration_test
   test "creates queue, publishes messages, and consumes them" do
-    use_cassette "integration_test" do
-      Process.register(self(), __MODULE__)
-      {:ok, _pid} = Broker.start_link()
+    Process.register(self(), __MODULE__)
+    {:ok, _pid} = Broker.start_link()
 
-      message = put_body(%Message{}, "hi")
+    message = put_body(%Message{}, "hi")
 
-      Broker.publish(:sub, message)
+    Broker.publish(:sub, message)
 
-      assert_receive {:process, consumed_message}
+    assert_receive {:process, consumed_message}, 1000
 
-      assert consumed_message.body == "hi"
-    end
+    assert consumed_message.body == "hi"
   end
 end
