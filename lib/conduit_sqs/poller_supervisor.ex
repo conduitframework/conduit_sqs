@@ -5,9 +5,6 @@ defmodule ConduitSQS.PollerSupervisor do
     Supervisor.start_link(__MODULE__, [broker, subscribers, opts], name: __MODULE__)
   end
 
-  # %{
-  #   conduitsqs_test: {ConduitSQSTest.Subscriber, [from: ["conduitsqs-test"]]}
-  # },
   def init([broker, subscribers, opts]) do
     import Supervisor.Spec
 

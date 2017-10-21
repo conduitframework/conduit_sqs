@@ -2,9 +2,10 @@ defmodule ConduitSQS do
   use Conduit.Adapter
   use Supervisor
   require Logger
-  alias ConduitSQS.{Meta, SQS}
+  alias ConduitSQS.{Meta, SQS, OptionValidator}
 
   def start_link(broker, topology, subscribers, opts) do
+    OptionValidator.validate!(topology, subscribers, opts)
     Supervisor.start_link(__MODULE__, [broker, topology, subscribers, opts], name: __MODULE__)
   end
 
