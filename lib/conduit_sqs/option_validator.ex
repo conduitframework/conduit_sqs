@@ -59,7 +59,8 @@ defmodule ConduitSQS.OptionValidator do
   defp validate_create_queue_options(_, []), do: nil
 
   defp raise_create_queue_option_error(queue, option_name, expectation, value) do
-    raise OptionError, "Expected #{inspect option_name} for queue #{inspect queue} to #{expectation}, but got #{inspect value}"
+    raise OptionError,
+      "Expected #{inspect option_name} for queue #{inspect queue} to #{expectation}, but got #{inspect value}"
   end
 
   defp validate_subscribers!(subscribers) do
@@ -68,7 +69,8 @@ defmodule ConduitSQS.OptionValidator do
         validate_from(name, opts)
         validate_subscriber_options(name, opts)
       {name, _} ->
-        raise OptionError, "Expected subscribe name to be an atom, but got #{inspect name}"
+        raise OptionError,
+          "Expected subscribe name to be an atom, but got #{inspect name}"
     end)
   end
 
@@ -77,15 +79,19 @@ defmodule ConduitSQS.OptionValidator do
       {:ok, from} when is_binary(from) ->
         true
       {:ok, from} ->
-        raise OptionError, "Expected :from for subscription #{inspect name} to be a binary, but got #{inspect from}"
+        raise OptionError,
+          "Expected :from for subscription #{inspect name} to be a binary, but got #{inspect from}"
       :error ->
-        raise OptionError, "Expected :from for subscription #{inspect name} to be a binary, but got none"
+        raise OptionError,
+          "Expected :from for subscription #{inspect name} to be a binary, but got none"
     end
   end
 
   for option <- [:attribute_names, :message_attribute_names] do
-    defp validate_subscriber_options(name, [{unquote(option) = option, names} | _]) when names != :all and not is_list(names) do
-      raise OptionError, "Expected #{inspect option} for subscription #{inspect name} to be :all or a list of valid attribute names"
+    defp validate_subscriber_options(name, [{unquote(option) = option, names} | _])
+    when names != :all and not is_list(names) do
+      raise OptionError,
+        "Expected #{inspect option} for subscription #{inspect name} to be :all or a list of valid attribute names"
     end
   end
 
@@ -95,13 +101,17 @@ defmodule ConduitSQS.OptionValidator do
     wait_time_seconds: 0..20
   ]
   for {option, range} <- option_ranges, range = Macro.escape(range) do
-    defp validate_subscriber_options(name, [{unquote(option), num} | _]) when num not in unquote(range) do
-      raise OptionError, "Expected #{unquote(option)} for subscription #{inspect name} to be in range #{inspect unquote(range)}, but got #{inspect num}"
+    defp validate_subscriber_options(name, [{unquote(option), num} | _])
+    when num not in unquote(range) do
+      raise OptionError,
+        "Expected #{unquote(option)} for subscription #{inspect name} to be in range #{inspect unquote(range)}, but got #{inspect num}"
     end
   end
 
-  defp validate_subscriber_options(name, [{:worker_pool_size, num} | _]) when (is_number(num) and num <= 0) or not is_number(num) do
-    raise OptionError, "Expected :worker_pool_size for subscription #{inspect name} to be greater than 0, but got #{inspect num}"
+  defp validate_subscriber_options(name, [{:worker_pool_size, num} | _])
+  when (is_number(num) and num <= 0) or not is_number(num) do
+    raise OptionError,
+      "Expected :worker_pool_size for subscription #{inspect name} to be greater than 0, but got #{inspect num}"
   end
 
   defp validate_subscriber_options(name, [_ | rest]) do
@@ -111,8 +121,10 @@ defmodule ConduitSQS.OptionValidator do
     true
   end
 
-  defp validate_adapter_opts!([{:worker_pool_size, num} | _]) when (is_number(num) and num <= 0) or not is_number(num) do
-    raise OptionError, "Expected :worker_pool_size for adapter option to be greater than 0, but got #{inspect num}"
+  defp validate_adapter_opts!([{:worker_pool_size, num} | _])
+  when (is_number(num) and num <= 0) or not is_number(num) do
+    raise OptionError,
+      "Expected :worker_pool_size for adapter option to be greater than 0, but got #{inspect num}"
   end
   defp validate_adapter_opts!([_ | rest]) do
     validate_adapter_opts!(rest)
