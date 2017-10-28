@@ -75,7 +75,7 @@ defmodule ConduitSQS.Mixfile do
      name: :conduit_sqs,
      files: ["lib", "mix.exs", "README*", "LICENSE*"],
      maintainers: ["Allen Madsen"],
-     licenses: ["Apache 2.0"],
+     licenses: ["MIT"],
      links: %{"GitHub" => "https://github.com/conduitframework/conduit_sqs",
               "Docs" => "https://hexdocs.pm/conduit_sqs"}]
   end
