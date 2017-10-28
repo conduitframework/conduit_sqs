@@ -1,8 +1,27 @@
 defmodule ConduitSQS.SQS.Options do
+  @moduledoc """
+  Produces SQS options from a conduit message and publish options.
+  """
   import Conduit.Message
 
+  @type sqs_message_attribute :: %{
+    name: binary,
+    data_type: :string | :binary | :number,
+    custom_type: binary | none,
+    value: binary | number
+  }
+  @type sqs_options :: [
+    delay_seconds: 0..900,
+    message_attributes: sqs_message_attribute | [sqs_message_attribute, ...],
+    message_deduplication_id: binary,
+    message_group_id: binary
+  ]
+
+  @doc false
+  @spec from(Conduit.Message.t, Keyword.t) :: sqs_message_attribute
   def from(message, opts) do
-    [{:message_attributes, get_message_attributes(message)} | opts]
+    opts
+    |> Keyword.put(:message_attributes, get_message_attributes(message))
     |> put_present_option(:message_deduplication_id, get_header(message, "deduplication_id"))
     |> put_present_option(:group_id, get_header(message, "group_id"))
   end

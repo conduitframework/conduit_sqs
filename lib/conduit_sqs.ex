@@ -1,14 +1,23 @@
 defmodule ConduitSQS do
+  @moduledoc """
+  Implements the Conduit adapter interface for SQS
+  """
   use Conduit.Adapter
   use Supervisor
   require Logger
   alias ConduitSQS.{Meta, SQS, OptionValidator}
 
+  @doc """
+  Implents Conduit.Adapter.start_link/4 callback
+  """
+  @impl true
   def start_link(broker, topology, subscribers, opts) do
     OptionValidator.validate!(topology, subscribers, opts)
     Supervisor.start_link(__MODULE__, [broker, topology, subscribers, opts], name: __MODULE__)
   end
 
+  @doc false
+  @impl true
   def init([broker, topology, subscribers, opts]) do
     Logger.info("SQS Adapter started!")
     import Supervisor.Spec
@@ -25,6 +34,10 @@ defmodule ConduitSQS do
     supervise(children, strategy: :one_for_one)
   end
 
+  @doc """
+  Implents Conduit.Adapter.publish/3 callback
+  """
+  @impl true
   def publish(message, config, opts) do
     SQS.publish(message, config, opts)
   end

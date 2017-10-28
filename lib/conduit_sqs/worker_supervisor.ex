@@ -1,10 +1,16 @@
 defmodule ConduitSQS.WorkerSupervisor do
+  @moduledoc """
+  Manages workers for a specific queue
+  """
   use Supervisor
 
+  @doc false
   def start_link(broker, name, sub_opts, opts) do
     Supervisor.start_link(__MODULE__, [broker, name, sub_opts, opts], name: __MODULE__)
   end
 
+  @doc false
+  @impl true
   def init([broker, name, sub_opts, opts]) do
     import Supervisor.Spec
 

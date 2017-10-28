@@ -1,10 +1,16 @@
 defmodule ConduitSQS.PollerSupervisor do
+  @moduledoc """
+  Manages pollers
+  """
   use Supervisor
 
+  @doc false
   def start_link(broker, subscribers, opts) do
     Supervisor.start_link(__MODULE__, [broker, subscribers, opts], name: __MODULE__)
   end
 
+  @doc false
+  @impl true
   def init([broker, subscribers, opts]) do
     import Supervisor.Spec
 

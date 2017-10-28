@@ -1,17 +1,27 @@
 defmodule ConduitSQS.OptionValidator do
+  @moduledoc """
+  Validates that options passed in the broker are valid upon startup
+  """
   require Logger
 
   defmodule OptionError do
     defexception [:message]
   end
 
+  @type topology :: Conduit.Adapter.topology
+  @type subscribers :: Conduit.Adapter.subscribers
+  @type adapter_opts :: Keyword.t
+
+  @spec validate!(topology, subscribers, adapter_opts) :: true | no_return
   def validate!(topology, subscribers, adapter_opts) do
     validate_topology!(topology)
     validate_subscribers!(subscribers)
     validate_adapter_opts!(adapter_opts)
+
+    true
   end
 
-  def validate_topology!(topology) do
+  defp validate_topology!(topology) do
     Enum.each(topology, fn
       {:queue, queue, opts} ->
         unless is_binary(queue) do
@@ -25,8 +35,8 @@ defmodule ConduitSQS.OptionValidator do
   end
 
   @range_options %{
-    maximum_message_size: 1024..262144,
-    message_retention_period: 60..1209600,
+    maximum_message_size: 1024..262_144,
+    message_retention_period: 60..1_209_600,
     delay_seconds: 0..900,
     receive_message_wait_time_seconds: 0..20
   }
@@ -97,7 +107,7 @@ defmodule ConduitSQS.OptionValidator do
 
   option_ranges = [
     max_number_of_messages: 1..10,
-    visibility_timeout: 0..43200,
+    visibility_timeout: 0..43_200,
     wait_time_seconds: 0..20
   ]
   for {option, range} <- option_ranges, range = Macro.escape(range) do

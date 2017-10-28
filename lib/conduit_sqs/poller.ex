@@ -1,19 +1,30 @@
 defmodule ConduitSQS.Poller do
+  @moduledoc """
+  Handles demand from Workers by polling an SQS queue for messages
+  """
   use GenStage
   import Injex
   inject :meta, ConduitSQS.Meta
   inject :sqs, ConduitSQS.SQS
 
   defmodule State do
+    @moduledoc false
     defstruct [:broker, :queue, :subscriber_opts, :adapter_opts, demand: 0]
   end
 
+  @doc false
   def start_link(broker, subscription_name, queue, subscriber_opts, adapter_opts) do
-    name = {:via, Registry, {ConduitSQS.registry_name(broker), {__MODULE__, subscription_name}}}
+    name = {:via, Registry,
+      {ConduitSQS.registry_name(broker), {__MODULE__, subscription_name}}
+    }
 
-    GenStage.start_link(__MODULE__, [broker, queue, subscriber_opts, adapter_opts], name: name)
+    GenStage.start_link(__MODULE__,
+      [broker, queue, subscriber_opts, adapter_opts],
+      name: name
+    )
   end
 
+  @doc false
   @impl true
   def init([broker, queue, subscriber_opts, adapter_opts]) do
     Process.send(self(), :check_active, [])

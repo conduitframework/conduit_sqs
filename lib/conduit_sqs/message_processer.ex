@@ -1,9 +1,16 @@
 defmodule ConduitSQS.MessageProcessor do
+  @moduledoc """
+  Processes a message batch and acks successful messages
+  """
   import Injex
   alias Conduit.Message
   import Conduit.Message
   inject :sqs, ConduitSQS.SQS
 
+  @doc """
+  Processes messages and acks successful messages
+  """
+  @spec process(Conduit.Adapter.broker, atom, [Conduit.Message.t], Keyword.t) :: {:ok, term} | {:error, term}
   def process(broker, name, messages, opts) do
     messages
     |> Enum.map(&process_message(broker, name, &1))
