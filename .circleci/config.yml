@@ -40,7 +40,6 @@ jobs:
             - v1-build-develop
       - run: mix compile
       - run: MIX_ENV=test mix compile
-      - run: MIX_ENV=prod mix compile
       - save_cache:
           key: v1-build-{{checksum "mix.lock.frozen"}}
           paths:
