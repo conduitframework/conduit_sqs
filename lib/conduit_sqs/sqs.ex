@@ -6,12 +6,11 @@ defmodule ConduitSQS.SQS do
   alias ExAws.SQS, as: Client
   alias Conduit.Message
   alias ConduitSQS.SQS.Options
-  import Conduit.Message
 
-  @type toplogy :: Conduit.Adapter.topology
+  @type topology :: Conduit.Adapter.topology
   @type opts :: Keyword.t
   @type queue :: binary
-  @type max_number_of_messages :: pos_integer,
+  @type max_number_of_messages :: pos_integer
   @type subscriber_opts :: Keyword.t
   @type publish_opts :: Keyword.t
   @type adapter_opts :: Keyword.t
@@ -41,7 +40,7 @@ defmodule ConduitSQS.SQS do
   @doc """
   Converts a Conduit message to an SQS message and publishes it
   """
-  @spec publish(Conduit.Message.t, adapter_opts, publish_opts) ::
+  @spec publish(Conduit.Message.t, adapter_opts, publish_opts) :: term
   def publish(%Message{body: body} = message, config, opts) do
     message.destination
     |> Client.send_message(body, Options.from(message, opts))

@@ -4,6 +4,9 @@ jobs:
     working_directory: ~/app
     docker:
       - image: circleci/elixir:1.5.2
+        environment:
+          - ACCESS_KEY_ID=123
+          - SECRET_ACCESS_KEY=321
     steps:
       - checkout
 
@@ -51,7 +54,7 @@ jobs:
           paths:
             - _build
 
-      - run: mix coveralls.circle
+      - run: mix coveralls.circle --exclude integration_test
       - run: mix credo --all
 
       - store_test_results:
