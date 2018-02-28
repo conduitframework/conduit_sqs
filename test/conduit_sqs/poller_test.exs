@@ -11,10 +11,10 @@ defmodule ConduitSQS.PollerTest do
       adapter_opts = []
 
       assert Poller.init([Broker, queue, subscriber_opts, adapter_opts]) == {
-        :producer,
-        %Poller.State{broker: Broker, queue: queue, subscriber_opts: subscriber_opts, adapter_opts: adapter_opts},
-        [demand: :accumulate]
-      }
+               :producer,
+               %Poller.State{broker: Broker, queue: queue, subscriber_opts: subscriber_opts, adapter_opts: adapter_opts},
+               [demand: :accumulate]
+             }
 
       assert_received :check_active
     end
@@ -45,13 +45,23 @@ defmodule ConduitSQS.PollerTest do
 
     test "when all demand is handled, it produces messages and updates demand" do
       override Poller, sqs: SQSEqual do
-        state = %Poller.State{queue: "conduitsqs-test", subscriber_opts: [max_number_of_messages: 5], adapter_opts: [], demand: 5}
+        state = %Poller.State{
+          queue: "conduitsqs-test",
+          subscriber_opts: [max_number_of_messages: 5],
+          adapter_opts: [],
+          demand: 5
+        }
 
         assert Poller.handle_info(:get_messages, state) == {
-          :noreply,
-          [%Message{}, %Message{}, %Message{}, %Message{}, %Message{}],
-          %Poller.State{queue: "conduitsqs-test", subscriber_opts: [max_number_of_messages: 5], adapter_opts: [], demand: 0}
-        }
+                 :noreply,
+                 [%Message{}, %Message{}, %Message{}, %Message{}, %Message{}],
+                 %Poller.State{
+                   queue: "conduitsqs-test",
+                   subscriber_opts: [max_number_of_messages: 5],
+                   adapter_opts: [],
+                   demand: 0
+                 }
+               }
 
         refute_received :get_messages
       end
@@ -59,13 +69,23 @@ defmodule ConduitSQS.PollerTest do
 
     test "when demand equal to the fetch limit is handled, it produces messags, updates demand, and schedules immediately" do
       override Poller, sqs: SQSEqual do
-        state = %Poller.State{queue: "conduitsqs-test", subscriber_opts: [max_number_of_messages: 5], adapter_opts: [], demand: 10}
+        state = %Poller.State{
+          queue: "conduitsqs-test",
+          subscriber_opts: [max_number_of_messages: 5],
+          adapter_opts: [],
+          demand: 10
+        }
 
         assert Poller.handle_info(:get_messages, state) == {
-          :noreply,
-          [%Message{}, %Message{}, %Message{}, %Message{}, %Message{}],
-          %Poller.State{queue: "conduitsqs-test", subscriber_opts: [max_number_of_messages: 5], adapter_opts: [], demand: 5}
-        }
+                 :noreply,
+                 [%Message{}, %Message{}, %Message{}, %Message{}, %Message{}],
+                 %Poller.State{
+                   queue: "conduitsqs-test",
+                   subscriber_opts: [max_number_of_messages: 5],
+                   adapter_opts: [],
+                   demand: 5
+                 }
+               }
 
         assert_received :get_messages
       end
@@ -76,15 +96,26 @@ defmodule ConduitSQS.PollerTest do
         Enum.map(1..(fetch_amount - 2), fn _ -> %Message{} end)
       end
     end
+
     test "when demand less than the fetch limit is handled, it produces messags, updates demand, and schedules later" do
       override Poller, sqs: SQSLess do
-        state = %Poller.State{queue: "conduitsqs-test", subscriber_opts: [max_number_of_messages: 5], adapter_opts: [], demand: 10}
+        state = %Poller.State{
+          queue: "conduitsqs-test",
+          subscriber_opts: [max_number_of_messages: 5],
+          adapter_opts: [],
+          demand: 10
+        }
 
         assert Poller.handle_info(:get_messages, state) == {
-          :noreply,
-          [%Message{}, %Message{}, %Message{}],
-          %Poller.State{queue: "conduitsqs-test", subscriber_opts: [max_number_of_messages: 5], adapter_opts: [], demand: 7}
-        }
+                 :noreply,
+                 [%Message{}, %Message{}, %Message{}],
+                 %Poller.State{
+                   queue: "conduitsqs-test",
+                   subscriber_opts: [max_number_of_messages: 5],
+                   adapter_opts: [],
+                   demand: 7
+                 }
+               }
 
         assert_receive :get_messages, 300
       end

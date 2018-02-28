@@ -8,19 +8,20 @@ defmodule ConduitSQS.WorkerGroupSupervisorTest do
         test: [],
         test2: []
       }
+
       assert {:ok, {sup_opts, child_specs}} = WorkerGroupSupervisor.init([Broker, subscribers, []])
 
       # {strategy, max_restarts, max_seconds}
       assert sup_opts == {:one_for_one, 3, 5}
 
       assert child_specs == [
-        {{ConduitSQS.WorkerSupervisor, :test},
-          {ConduitSQS.WorkerSupervisor, :start_link, [Broker, :test, [], []]},
-          :permanent, :infinity, :supervisor, [ConduitSQS.WorkerSupervisor]},
-        {{ConduitSQS.WorkerSupervisor, :test2},
-          {ConduitSQS.WorkerSupervisor, :start_link, [Broker, :test2, [], []]},
-          :permanent, :infinity, :supervisor, [ConduitSQS.WorkerSupervisor]}
-      ]
+               {{ConduitSQS.WorkerSupervisor, :test},
+                {ConduitSQS.WorkerSupervisor, :start_link, [Broker, :test, [], []]}, :permanent, :infinity, :supervisor,
+                [ConduitSQS.WorkerSupervisor]},
+               {{ConduitSQS.WorkerSupervisor, :test2},
+                {ConduitSQS.WorkerSupervisor, :start_link, [Broker, :test2, [], []]}, :permanent, :infinity,
+                :supervisor, [ConduitSQS.WorkerSupervisor]}
+             ]
     end
   end
 end

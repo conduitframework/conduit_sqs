@@ -6,8 +6,8 @@ defmodule ConduitSQS.Mixfile do
       app: :conduit_sqs,
       version: "0.1.0",
       elixir: "~> 1.4",
-      build_embedded: Mix.env == :prod,
-      start_permanent: Mix.env == :prod,
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
       deps: deps(),
 
       # Docs
@@ -19,21 +19,19 @@ defmodule ConduitSQS.Mixfile do
       # Package
       description: "Amazon SQS adapter for Conduit.",
       package: package(),
-
       dialyzer: [flags: ["-Werror_handling", "-Wrace_conditions"]],
 
       # Coveralls
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
-        "coveralls": :test,
+        coveralls: :test,
         "coveralls.circle": :test,
         vcr: :test,
         "vcr.delete": :test,
         "vcr.check": :test,
         "vcr.show": :test
       ],
-
-      aliases: ["publish": ["hex.publish", &git_tag/1]]
+      aliases: [publish: ["hex.publish", &git_tag/1]]
     ]
   end
 
@@ -71,25 +69,31 @@ defmodule ConduitSQS.Mixfile do
   end
 
   defp package do
-    [# These are the default files included in the package
-     name: :conduit_sqs,
-     files: ["lib", "mix.exs", "README*", "LICENSE*"],
-     maintainers: ["Allen Madsen"],
-     licenses: ["MIT"],
-     links: %{"GitHub" => "https://github.com/conduitframework/conduit_sqs",
-              "Docs" => "https://hexdocs.pm/conduit_sqs"}]
+    # These are the default files included in the package
+    [
+      name: :conduit_sqs,
+      files: ["lib", "mix.exs", "README*", "LICENSE*"],
+      maintainers: ["Allen Madsen"],
+      licenses: ["MIT"],
+      links: %{
+        "GitHub" => "https://github.com/conduitframework/conduit_sqs",
+        "Docs" => "https://hexdocs.pm/conduit_sqs"
+      }
+    ]
   end
 
   defp docs do
-    [main: "readme",
-     project: "ConduitSQS",
-     extra_section: "Guides",
-     extras: ["README.md"],
-     assets: ["assets"]]
+    [
+      main: "readme",
+      project: "ConduitSQS",
+      extra_section: "Guides",
+      extras: ["README.md"],
+      assets: ["assets"]
+    ]
   end
 
   defp git_tag(_args) do
-    tag = "v" <> Mix.Project.config[:version]
+    tag = "v" <> Mix.Project.config()[:version]
     System.cmd("git", ["tag", tag])
     System.cmd("git", ["push", "origin", tag])
   end

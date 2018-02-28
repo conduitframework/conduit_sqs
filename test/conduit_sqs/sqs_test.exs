@@ -20,10 +20,12 @@ defmodule ConduitSQS.SQSTest do
       topology = [{:queue, "conduit-test", [receive_message_wait_time_seconds: 0]}]
 
       use_cassette "setup_topology" do
-        assert [%{
-          queue_url: "https://sqs.us-east-1.amazonaws.com/974419985843/conduit-test",
-          request_id: _
-        }] = SQS.setup_topology(topology, opts)
+        assert [
+                 %{
+                   queue_url: "https://sqs.us-east-1.amazonaws.com/974419985843/conduit-test",
+                   request_id: _
+                 }
+               ] = SQS.setup_topology(topology, opts)
       end
     end
   end
@@ -41,11 +43,11 @@ defmodule ConduitSQS.SQSTest do
 
       use_cassette "publish" do
         assert %{
-          md5_of_message_attributes: "b005563a2fd67fbf2895879f0a08c2b5",
-          md5_of_message_body: "49f68a5c8493ec2c0bf489821c21fc3b",
-          message_id: _,
-          request_id: _
-        } = SQS.publish(message, config, [])
+                 md5_of_message_attributes: "b005563a2fd67fbf2895879f0a08c2b5",
+                 md5_of_message_body: "49f68a5c8493ec2c0bf489821c21fc3b",
+                 message_id: _,
+                 request_id: _
+               } = SQS.publish(message, config, [])
       end
     end
   end
@@ -53,31 +55,33 @@ defmodule ConduitSQS.SQSTest do
   describe "get_messages/4" do
     test "returns a list of messages with attributes mapped to conduit attributes and headers", %{opts: config} do
       use_cassette "receive" do
-        assert [%Message{
-          body: "hi",
-          correlation_id: "1",
-          created_by: "test",
-          headers: %{
-            "approximate_first_receive_timestamp" => _,
-            "approximate_receive_count" => _,
-            "attempts" => 1,
-            "ignore" => true,
-            "md5_of_body" => _,
-            "message_id" => _,
-            "receipt_handle" => _,
-            "request_id" => _,
-            "sender_id" => _,
-            "sent_timestamp" => _
-          },
-          source: "conduit-test"
-        }] = SQS.get_messages("conduit-test", 10, [], config)
+        assert [
+                 %Message{
+                   body: "hi",
+                   correlation_id: "1",
+                   created_by: "test",
+                   headers: %{
+                     "approximate_first_receive_timestamp" => _,
+                     "approximate_receive_count" => _,
+                     "attempts" => 1,
+                     "ignore" => true,
+                     "md5_of_body" => _,
+                     "message_id" => _,
+                     "receipt_handle" => _,
+                     "request_id" => _,
+                     "sender_id" => _,
+                     "sent_timestamp" => _
+                   },
+                   source: "conduit-test"
+                 }
+               ] = SQS.get_messages("conduit-test", 10, [], config)
       end
     end
   end
 
   describe "ack_messages/2" do
     test "deletes acked messages and ignore nacked messages" do
-      #TODO: Full integration test?
+      # TODO: Full integration test?
     end
   end
 end

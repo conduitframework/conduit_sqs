@@ -25,7 +25,7 @@ defmodule ConduitSQS.SetupTest do
 
   describe "handle_info/2" do
     test "sets up topology and stops" do
-      override(Setup, sqs: SQS, meta: Meta) do
+      override Setup, sqs: SQS, meta: Meta do
         state = %Setup.State{broker: Broker, topology: [], opts: []}
         assert Setup.handle_info(:setup_topology, state) == {:stop, :normal, state}
 

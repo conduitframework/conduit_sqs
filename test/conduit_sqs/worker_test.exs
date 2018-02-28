@@ -7,17 +7,20 @@ defmodule ConduitSQS.WorkerTest do
   describe "init/1" do
     test "sets itself as a consumer, sets up state, and subscribes to the pollers" do
       assert Worker.init([Broker, :name, []]) == {
-        :consumer,
-        %Worker.State{
-          broker: Broker,
-          name: :name,
-          adapter_opts: []
-        },
-        subscribe_to: [{{:via, Registry, {Broker.Registry, {ConduitSQS.Poller, :name}}}, [
-          max_demand: 1000,
-          min_demand: 500
-        ]}]
-      }
+               :consumer,
+               %Worker.State{
+                 broker: Broker,
+                 name: :name,
+                 adapter_opts: []
+               },
+               subscribe_to: [
+                 {{:via, Registry, {Broker.Registry, {ConduitSQS.Poller, :name}}},
+                  [
+                    max_demand: 1000,
+                    min_demand: 500
+                  ]}
+               ]
+             }
     end
   end
 

@@ -14,14 +14,9 @@ defmodule ConduitSQS.Poller do
 
   @doc false
   def start_link(broker, subscription_name, queue, subscriber_opts, adapter_opts) do
-    name = {:via, Registry,
-      {ConduitSQS.registry_name(broker), {__MODULE__, subscription_name}}
-    }
+    name = {:via, Registry, {ConduitSQS.registry_name(broker), {__MODULE__, subscription_name}}}
 
-    GenStage.start_link(__MODULE__,
-      [broker, queue, subscriber_opts, adapter_opts],
-      name: name
-    )
+    GenStage.start_link(__MODULE__, [broker, queue, subscriber_opts, adapter_opts], name: name)
   end
 
   @doc false
@@ -29,12 +24,13 @@ defmodule ConduitSQS.Poller do
   def init([broker, queue, subscriber_opts, adapter_opts]) do
     Process.send(self(), :check_active, [])
 
-    {:producer, %State{
-      broker: broker,
-      queue: queue,
-      subscriber_opts: subscriber_opts,
-      adapter_opts: adapter_opts
-    }, demand: :accumulate}
+    {:producer,
+     %State{
+       broker: broker,
+       queue: queue,
+       subscriber_opts: subscriber_opts,
+       adapter_opts: adapter_opts
+     }, demand: :accumulate}
   end
 
   @impl true
@@ -43,6 +39,7 @@ defmodule ConduitSQS.Poller do
 
     {:noreply, [], %{state | demand: new_demand}}
   end
+
   def handle_demand(new_demand, %State{demand: current_demand} = state) do
     {:noreply, [], %{state | demand: new_demand + current_demand}}
   end
@@ -58,9 +55,12 @@ defmodule ConduitSQS.Poller do
     new_demand = current_demand - handled_demand
 
     cond do
-      new_demand == 0 -> nil
+      new_demand == 0 ->
+        nil
+
       handled_demand == max_number_of_messages ->
         Process.send(self(), :get_messages, [])
+
       true ->
         Process.send_after(self(), :get_messages, 200)
     end

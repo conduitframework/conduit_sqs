@@ -21,8 +21,7 @@ defmodule ConduitSQS.Worker do
   @doc false
   @impl true
   def init([broker, name, opts]) do
-    poller_name = {:via, Registry,
-      {ConduitSQS.registry_name(broker), {ConduitSQS.Poller, name}}}
+    poller_name = {:via, Registry, {ConduitSQS.registry_name(broker), {ConduitSQS.Poller, name}}}
 
     max_demand = Keyword.get(opts, :max_demand, 1000)
     min_demand = Keyword.get(opts, :min_demand, 500)

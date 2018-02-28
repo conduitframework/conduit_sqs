@@ -10,7 +10,7 @@ defmodule ConduitSQS.MessageProcessor do
   @doc """
   Processes messages and acks successful messages
   """
-  @spec process(Conduit.Adapter.broker, atom, [Conduit.Message.t], Keyword.t) :: {:ok, term} | {:error, term}
+  @spec process(Conduit.Adapter.broker(), atom, [Conduit.Message.t()], Keyword.t()) :: {:ok, term} | {:error, term}
   def process(broker, name, messages, opts) do
     messages
     |> Enum.map(&process_message(broker, name, &1))
@@ -28,10 +28,12 @@ defmodule ConduitSQS.MessageProcessor do
     case broker.receives(name, message) do
       %Message{status: :ack} = msg ->
         {:ack, msg}
+
       %Message{status: :nack} = msg ->
         {:nack, msg}
     end
-  rescue _ ->
-    {:nack, message}
+  rescue
+    _ ->
+      {:nack, message}
   end
 end

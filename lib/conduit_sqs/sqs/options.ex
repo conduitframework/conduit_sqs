@@ -5,20 +5,20 @@ defmodule ConduitSQS.SQS.Options do
   import Conduit.Message
 
   @type sqs_message_attribute :: %{
-    name: binary,
-    data_type: :string | :binary | :number,
-    custom_type: binary | none,
-    value: binary | number
-  }
+          name: binary,
+          data_type: :string | :binary | :number,
+          custom_type: binary | none,
+          value: binary | number
+        }
   @type sqs_options :: [
-    delay_seconds: 0..900,
-    message_attributes: sqs_message_attribute | [sqs_message_attribute, ...],
-    message_deduplication_id: binary,
-    message_group_id: binary
-  ]
+          delay_seconds: 0..900,
+          message_attributes: sqs_message_attribute | [sqs_message_attribute, ...],
+          message_deduplication_id: binary,
+          message_group_id: binary
+        ]
 
   @doc false
-  @spec from(Conduit.Message.t, Keyword.t) :: sqs_message_attribute
+  @spec from(Conduit.Message.t(), Keyword.t()) :: sqs_message_attribute
   def from(message, opts) do
     opts
     |> Keyword.put(:message_attributes, get_message_attributes(message))
@@ -61,9 +61,11 @@ defmodule ConduitSQS.SQS.Options do
   defp build_sqs_attribute(name, value) when is_boolean(value) do
     build_sqs_attribute(name, :number, "boolean", if(value, do: 1, else: 0))
   end
+
   defp build_sqs_attribute(name, value) when is_number(value) do
     build_sqs_attribute(name, :number, nil, value)
   end
+
   defp build_sqs_attribute(name, value) when is_binary(value) do
     if String.printable?(value) do
       build_sqs_attribute(name, :string, nil, value)
@@ -75,6 +77,7 @@ defmodule ConduitSQS.SQS.Options do
   defp build_sqs_attribute(name, type, nil, value) do
     %{name: name, data_type: type, value: value}
   end
+
   defp build_sqs_attribute(name, type, custom_type, value) do
     name
     |> build_sqs_attribute(type, nil, value)
@@ -82,6 +85,7 @@ defmodule ConduitSQS.SQS.Options do
   end
 
   defp put_present_option(options, _name, nil), do: options
+
   defp put_present_option(options, name, value) do
     Keyword.put(options, name, value)
   end

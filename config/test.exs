@@ -9,7 +9,7 @@ config :conduit_sqs, ConduitSQSIntegrationTest.Broker,
   secret_access_key: System.get_env("SECRET_ACCESS_KEY"),
   adapter: ConduitSQS
 
-config :exvcr, [
+config :exvcr,
   vcr_cassette_library_dir: "test/fixture/vcr_cassettes",
   custom_cassette_library_dir: "test/fixture/custom_cassettes",
   filter_sensitive_data: [
@@ -19,4 +19,3 @@ config :exvcr, [
   filter_url_params: false,
   filter_request_headers: ["Authorization", "x-amz-date"],
   response_headers_blacklist: []
-]
