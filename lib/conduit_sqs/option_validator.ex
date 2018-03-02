@@ -116,9 +116,11 @@ defmodule ConduitSQS.OptionValidator do
   for {option, range} <- option_ranges, range = Macro.escape(range) do
     defp validate_subscriber_options(name, [{unquote(option), num} | _])
          when num not in unquote(range) do
-      raise OptionError,
-            "Expected #{unquote(option)} for subscription #{inspect(name)} to be in range #{inspect(unquote(range))}, \
-            but got #{inspect(num)}"
+      message =
+        "Expected #{unquote(option)} for subscription #{inspect(name)} to be in range " <>
+          "#{inspect(unquote(range))}, but got #{inspect(num)}"
+
+      raise OptionError, message
     end
   end
 
