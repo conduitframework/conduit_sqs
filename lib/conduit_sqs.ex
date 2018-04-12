@@ -35,10 +35,10 @@ defmodule ConduitSQS do
   end
 
   @doc """
-  Implents Conduit.Adapter.publish/3 callback
+  Implents Conduit.Adapter.publish/4 callback
   """
   @impl true
-  def publish(message, config, opts) do
+  def publish(_broker, message, config, opts) do
     SQS.publish(message, config, opts)
   end
 
