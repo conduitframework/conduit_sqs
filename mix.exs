@@ -54,11 +54,12 @@ defmodule ConduitSQS.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:conduit, "~> 0.8"},
-      {:ex_aws, "~> 1.1"},
+      {:conduit, "~> 0.11"},
+      {:ex_aws, "~> 2.0"},
+      {:ex_aws_sqs, "~> 2.0"},
       {:hackney, "~> 1.9"},
       {:sweet_xml, "~> 0.6"},
-      {:gen_stage, "~> 0.12.2"},
+      {:gen_stage, "~> 0.13.1"},
       {:injex, "~> 1.0"},
       {:ex_doc, "~> 0.14", only: :dev},
       {:dialyxir, "~> 0.4", only: :dev},

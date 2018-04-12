@@ -12,7 +12,12 @@ defmodule ConduitSQS.PollerTest do
 
       assert Poller.init([Broker, queue, subscriber_opts, adapter_opts]) == {
                :producer,
-               %Poller.State{broker: Broker, queue: queue, subscriber_opts: subscriber_opts, adapter_opts: adapter_opts},
+               %Poller.State{
+                 broker: Broker,
+                 queue: queue,
+                 subscriber_opts: subscriber_opts,
+                 adapter_opts: adapter_opts
+               },
                [demand: :accumulate]
              }
 
