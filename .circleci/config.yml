@@ -55,7 +55,7 @@ jobs:
           paths:
             - _build
 
-      - run: mix coveralls.circle
+      - run: mix coveralls.circle --exclude integration_test
       - run: mix dialyzer --halt-exit-status --no-check --no-compile
       - run: mix format --check-formatted
       - store_test_results:
