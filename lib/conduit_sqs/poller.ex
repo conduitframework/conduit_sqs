@@ -14,9 +14,17 @@ defmodule ConduitSQS.Poller do
     defstruct [:broker, :queue, :subscriber_opts, :adapter_opts, demand: 0]
   end
 
+  def child_spec([broker, subscription_name, _, _, _] = args) do
+    %{
+      id: name(broker, subscription_name),
+      start: {__MODULE__, :start_link, args},
+      type: :worker
+    }
+  end
+
   @doc false
   def start_link(broker, subscription_name, queue, subscriber_opts, adapter_opts) do
-    name = {:via, Registry, {ConduitSQS.registry_name(broker), {__MODULE__, subscription_name}}}
+    name = {:via, Registry, {ConduitSQS.registry_name(broker), name(broker, subscription_name)}}
 
     GenStage.start_link(__MODULE__, [broker, queue, subscriber_opts, adapter_opts], name: name)
   end
@@ -33,6 +41,11 @@ defmodule ConduitSQS.Poller do
        subscriber_opts: subscriber_opts,
        adapter_opts: adapter_opts
      }, demand: :accumulate}
+  end
+
+  @doc false
+  def name(broker, subscription) do
+    {Module.concat(broker, Adapter.Poller), subscription}
   end
 
   @impl true
@@ -67,7 +80,7 @@ defmodule ConduitSQS.Poller do
         Process.send_after(self(), :get_messages, 200)
     end
 
-    {:noreply, messages, %{state | demand: new_demand}}
+    {:noreply, messages, %{state | demand: new_demand}, :hibernate}
   end
 
   @impl true

@@ -4,24 +4,34 @@ defmodule ConduitSQS.WorkerSupervisor do
   """
   use Supervisor
 
+  def child_spec([broker, name, _, _] = args) do
+    %{
+      id: name(broker, name),
+      start: {__MODULE__, :start_link, args},
+      type: :supervisor
+    }
+  end
+
   @doc false
   def start_link(broker, name, sub_opts, opts) do
-    Supervisor.start_link(__MODULE__, [broker, name, sub_opts, opts], name: __MODULE__)
+    Supervisor.start_link(__MODULE__, [broker, name, sub_opts, opts])
   end
 
   @doc false
   @impl true
   def init([broker, name, sub_opts, opts]) do
-    import Supervisor.Spec
-
     worker_pool_size = Keyword.get(sub_opts, :worker_pool_size, Keyword.get(opts, :worker_pool_size, 5))
 
     children =
       1..worker_pool_size
       |> Enum.map(fn num ->
-        worker(ConduitSQS.Worker, [broker, name, num, opts], id: {ConduitSQS.Worker, num})
+        {ConduitSQS.Worker, [broker, name, num, opts]}
       end)
 
-    supervise(children, strategy: :one_for_one)
+    Supervisor.init(children, strategy: :one_for_one)
+  end
+
+  def name(broker, name) do
+    {Module.concat(broker, Adapter.WorkerSupervisor), name}
   end
 end

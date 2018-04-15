@@ -65,7 +65,8 @@ defmodule ConduitSQS.PollerTest do
                    subscriber_opts: [max_number_of_messages: 5],
                    adapter_opts: [],
                    demand: 0
-                 }
+                 },
+                 :hibernate
                }
 
         refute_received :get_messages
@@ -89,7 +90,8 @@ defmodule ConduitSQS.PollerTest do
                    subscriber_opts: [max_number_of_messages: 5],
                    adapter_opts: [],
                    demand: 5
-                 }
+                 },
+                 :hibernate
                }
 
         assert_received :get_messages
@@ -119,7 +121,8 @@ defmodule ConduitSQS.PollerTest do
                    subscriber_opts: [max_number_of_messages: 5],
                    adapter_opts: [],
                    demand: 7
-                 }
+                 },
+                 :hibernate
                }
 
         assert_receive :get_messages, 300

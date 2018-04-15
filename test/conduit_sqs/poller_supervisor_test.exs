@@ -14,19 +14,22 @@ defmodule ConduitSQS.PollerSupervisorTest do
     test "returns child specs for each queue" do
       assert {:ok, {sup_opts, child_specs}} = PollerSupervisor.init(@args)
 
-      # {strategy, max_restarts, max_seconds}
-      assert sup_opts == {:one_for_one, 3, 5}
+      assert sup_opts == %{intensity: 3, period: 5, strategy: :one_for_one}
 
-      assert child_specs == [
-               {{ConduitSQS.Poller, 0},
-                {ConduitSQS.Poller, :start_link,
-                 [Broker, :conduitsqs_test, "conduitsqs-test", [from: "conduitsqs-test"], []]}, :permanent, 5000,
-                :worker, [ConduitSQS.Poller]},
-               {{ConduitSQS.Poller, 1},
-                {ConduitSQS.Poller, :start_link,
-                 [Broker, :conduitsqs_test2, "conduitsqs-test2", [from: "conduitsqs-test2"], []]}, :permanent, 5000,
-                :worker, [ConduitSQS.Poller]}
-             ]
+      expected_child_specs = [
+        %{
+          id: {Broker.Adapter.Poller, :conduitsqs_test},
+          start: {ConduitSQS.Poller, :start_link, [Broker, :conduitsqs_test, nil, [from: "conduitsqs-test"], []]},
+          type: :worker
+        },
+        %{
+          id: {Broker.Adapter.Poller, :conduitsqs_test2},
+          start: {ConduitSQS.Poller, :start_link, [Broker, :conduitsqs_test2, nil, [from: "conduitsqs-test2"], []]},
+          type: :worker
+        }
+      ]
+
+      assert child_specs == expected_child_specs
     end
   end
 end
