@@ -1,0 +1,1 @@
+lib/conduit_sqs/option_validator.ex:73: Function raise_create_queue_option_error/4 only terminates with explicit exception

@@ -41,7 +41,7 @@ defmodule ConduitSQS.SQS do
   @doc """
   Converts a Conduit message to an SQS message and publishes it
   """
-  @spec publish(Conduit.Message.t(), adapter_opts, publish_opts) :: term
+  @spec publish(Conduit.Message.t(), adapter_opts, publish_opts) :: term | no_return
   def publish(%Message{body: body} = message, config, opts) do
     message.destination
     |> Client.send_message(body, Options.from(message, opts))

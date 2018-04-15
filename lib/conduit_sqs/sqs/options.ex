@@ -18,12 +18,12 @@ defmodule ConduitSQS.SQS.Options do
         ]
 
   @doc false
-  @spec from(Conduit.Message.t(), Keyword.t()) :: sqs_message_attribute
+  @spec from(Conduit.Message.t(), Keyword.t()) :: sqs_options
   def from(message, opts) do
     opts
     |> Keyword.put(:message_attributes, get_message_attributes(message))
     |> put_present_option(:message_deduplication_id, get_header(message, "deduplication_id"))
-    |> put_present_option(:group_id, get_header(message, "group_id"))
+    |> put_present_option(:message_group_id, get_header(message, "group_id"))
   end
 
   @attributes ~w(

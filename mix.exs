@@ -19,7 +19,7 @@ defmodule ConduitSQS.Mixfile do
       # Package
       description: "Amazon SQS adapter for Conduit.",
       package: package(),
-      dialyzer: [flags: ["-Werror_handling", "-Wrace_conditions"]],
+      dialyzer: [flags: ["-Werror_handling", "-Wrace_conditions"], ignore_warnings: "dialyzer.ignore-warnings"],
 
       # Coveralls
       test_coverage: [tool: ExCoveralls],
