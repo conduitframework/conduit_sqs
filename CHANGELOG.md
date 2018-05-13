@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2 (2018-05-12)
+
+### Fixed
+
+- Add poison as dependency for ExAws
+
 ## 0.2.1 (2018-05-12)
 
 ### Fixed
@@ -10,7 +16,7 @@
 
 ### Changed
 
-- Support new ExAWS
+- Support new ExAws
 
 ## 0.1.0 (2017-10-28)
 
