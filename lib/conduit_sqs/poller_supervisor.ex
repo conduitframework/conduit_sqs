@@ -23,7 +23,7 @@ defmodule ConduitSQS.PollerSupervisor do
     children =
       subscribers
       |> Enum.map(fn {name, subscriber_opts} ->
-        {ConduitSQS.Poller, [broker, name, opts[:from], subscriber_opts, opts]}
+        {ConduitSQS.Poller, [broker, name, subscriber_opts[:from], subscriber_opts, opts]}
       end)
 
     Supervisor.init(children, strategy: :one_for_one)

@@ -19,12 +19,16 @@ defmodule ConduitSQS.PollerSupervisorTest do
       expected_child_specs = [
         %{
           id: {Broker.Adapter.Poller, :conduitsqs_test},
-          start: {ConduitSQS.Poller, :start_link, [Broker, :conduitsqs_test, nil, [from: "conduitsqs-test"], []]},
+          start:
+            {ConduitSQS.Poller, :start_link,
+             [Broker, :conduitsqs_test, "conduitsqs-test", [from: "conduitsqs-test"], []]},
           type: :worker
         },
         %{
           id: {Broker.Adapter.Poller, :conduitsqs_test2},
-          start: {ConduitSQS.Poller, :start_link, [Broker, :conduitsqs_test2, nil, [from: "conduitsqs-test2"], []]},
+          start:
+            {ConduitSQS.Poller, :start_link,
+             [Broker, :conduitsqs_test2, "conduitsqs-test2", [from: "conduitsqs-test2"], []]},
           type: :worker
         }
       ]
