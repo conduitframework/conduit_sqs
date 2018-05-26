@@ -32,7 +32,7 @@ defmodule ConduitSQS.SQS do
 
     name
     |> Client.create_queue(queue_opts)
-    |> ExAws.request!(opts)
+    |> ExAws.request!(Keyword.merge(opts, max_attempts: :infinity))
     |> get_in([:body])
   end
 
@@ -59,7 +59,7 @@ defmodule ConduitSQS.SQS do
 
     queue
     |> Client.receive_message(sub_opts)
-    |> ExAws.request!(adapter_opts)
+    |> ExAws.request!(Keyword.merge(adapter_opts, max_attempts: :infinity))
     |> get_in([:body])
     |> __MODULE__.Message.to_conduit_messages(queue)
   end
