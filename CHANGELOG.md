@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.3 (2018-05-27)
+
+### Fixed
+
+- Use exponential backoff and try forever to create queues and request messages
+
+### Added
+
+- Can now specify backoff options globally and per action
+
 ## 0.2.2 (2018-05-12)
 
 ### Fixed

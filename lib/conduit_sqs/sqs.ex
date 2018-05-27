@@ -30,9 +30,14 @@ defmodule ConduitSQS.SQS do
   defp setup({:queue, name, queue_opts}, opts) do
     Logger.info("Declaring queue #{name}")
 
+    request_opts =
+      opts
+      |> Keyword.merge(request_opts(queue_opts))
+      |> Keyword.merge(max_attempts: :infinity)
+
     name
     |> Client.create_queue(queue_opts)
-    |> ExAws.request!(Keyword.merge(opts, max_attempts: :infinity))
+    |> ExAws.request!(request_opts)
     |> get_in([:body])
   end
 
@@ -43,9 +48,11 @@ defmodule ConduitSQS.SQS do
   """
   @spec publish(Conduit.Message.t(), adapter_opts, publish_opts) :: term | no_return
   def publish(%Message{body: body} = message, config, opts) do
+    request_opts = Keyword.merge(config, request_opts(opts))
+
     message.destination
     |> Client.send_message(body, Options.from(message, opts))
-    |> ExAws.request!(config)
+    |> ExAws.request!(request_opts)
     |> get_in([:body])
   end
 
@@ -57,9 +64,14 @@ defmodule ConduitSQS.SQS do
   def get_messages(queue, max_number_of_messages, subscriber_opts, adapter_opts) do
     sub_opts = build_subsriber_opts(max_number_of_messages, subscriber_opts)
 
+    request_opts =
+      adapter_opts
+      |> Keyword.merge(request_opts(subscriber_opts))
+      |> Keyword.merge(max_attempts: :infinity)
+
     queue
     |> Client.receive_message(sub_opts)
-    |> ExAws.request!(Keyword.merge(adapter_opts, max_attempts: :infinity))
+    |> ExAws.request!(request_opts)
     |> get_in([:body])
     |> __MODULE__.Message.to_conduit_messages(queue)
   end
@@ -80,4 +92,6 @@ defmodule ConduitSQS.SQS do
     |> Client.delete_message_batch(delete_message_items)
     |> ExAws.request(opts)
   end
+
+  defp request_opts(opts), do: Keyword.take(opts, [:base_backoff_in_ms, :max_backoff_in_ms, :max_attempts])
 end

@@ -33,7 +33,10 @@ config :my_app, MyApp.Broker,
 * `:adapter` - The adapter to use, should be `ConduitSQS`.
 * `:access_key_id` - The AWS access key ID. [See what ExAWS supports](https://hexdocs.pm/ex_aws/ExAws.html#module-getting-started).
 * `:secret_access_key` - The AWS secret access key. [See what ExAWS supports](https://hexdocs.pm/ex_aws/ExAws.html#module-getting-started).
-* :`worker_pool_size` - The default number of worker for each subscription. Defaults to 5 when not specified. Can also be overridden on each subscription.
+* `:worker_pool_size` - The default number of worker for each subscription. Defaults to `5` when not specified. Can also be overridden on each `subscribe`.
+* `:max_attempts` - How many times to retry publishing a message. Defaults to `10` when not specified. Can also be overriden on each `publish`.
+* `:base_backoff_in_ms` - The base factor used to exponentially backoff when a request fails. Defaults to `10` when not specified. Can also be overriden on `queue`, `publish`, and `subscribe`.
+* `:max_backoff_in_ms` - The maximum backoff when a request fails. Defaults to `10_000` when not specified. Can also be overriden on `queue`, `publish`, and `subscribe`.
 
 ## Configuring Queues
 
@@ -55,21 +58,26 @@ For creating a queue, ConduitSQS supports the same options that are specified in
 [SQS docs for creating a queue](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_CreateQueue.html)
 to understand what each of the options mean. These options include:
 
-* policy
-* visibility_timeout
-* maximum_message_size
-* message_retention_period
-* approximate_number_of_messages
-* approximate_number_of_messages_not_visible
-* created_timestamp
-* last_modified_timestamp
-* queue_arn
-* approximate_number_of_messages_delayed
-* delay_seconds
-* receive_message_wait_time_seconds
-* redrive_policy
-* fifo_queue
-* content_based_deduplication
+* `:policy`
+* `:visibility_timeout`
+* `:maximum_message_size`
+* `:message_retention_period`
+* `:approximate_number_of_messages`
+* `:approximate_number_of_messages_not_visible`
+* `:created_timestamp`
+* `:last_modified_timestamp`
+* `:queue_arn`
+* `:approximate_number_of_messages_delayed`
+* `:delay_seconds`
+* `:receive_message_wait_time_seconds`
+* `:redrive_policy`
+* `:fifo_queue`
+* `:content_based_deduplication`
+
+In addition to the SQS options, you can also pass the following:
+
+* `:base_backoff_in_ms` - The base factor used to exponentially backoff when a request fails. Defaults to `10` when not specified. Can also be set globally.
+* `:max_backoff_in_ms` - The maximum backoff when a request fails. Defaults to `10_000` when not specified. Can also be set globally.
 
 ## Configuring a Subscriber
 
@@ -96,19 +104,22 @@ For subscribing to a queue, ConduitSQS supports the same options that are specif
 [SQS docs for receiving a message](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ReceiveMessage.html)
 to understand what each of the options mean. These options include:
 
-* attribute_names
-* message_attribute_names
-* max_number_of_messages
-* visibility_timeout
-* wait_time_seconds
+* `:attribute_names`
+* `:message_attribute_names`
+* `:max_number_of_messages`
+* `:visibility_timeout`
+* `:wait_time_seconds`
 
 For `attribute_names` and `message_attributes`, ConduitSQS will attempt to pull all attributes unless overriden. ConduitSQS defaults `max_number_of_messages` to `10`, which is the largest that SQS supports.
 
 In addition to the SQS options, you can also pass the following:
 
-* worker_pool_size - The number of workers that simultaneously consume from that queue. Defaults to 5.
-* max_demand - Max number of messages in flow. Defaults to 1000.
-* min_demand - Minumum threshold of messages to cause pulling of more. Defaults to 500.
+* `:worker_pool_size` - The number of workers that simultaneously consume from that queue. Defaults to 5.
+* `:max_demand` - Max number of messages in flow. Defaults to 1000.
+* `:min_demand` - Minumum threshold of messages to cause pulling of more. Defaults to 500.
+* `:max_attempts` - How many times to retry publishing a message. Defaults to `10` when not specified. Can also be overriden on each `publish`.
+* `:base_backoff_in_ms` - The base factor used to exponentially backoff when a request fails. Defaults to `10` when not specified. Can also be set globally.
+* `:max_backoff_in_ms` - The maximum backoff when a request fails. Defaults to `10_000` when not specified. Can also be set globally.
 
 ## Configuring a Publisher
 
@@ -132,9 +143,9 @@ For publishing to a queue, ConduitSQS supports the same options that are specifi
 [SQS docs for publishing a message](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SendMessage.html)
 to understand what each of the options mean. These options include:
 
-* delay_seconds
-* message_deduplication_id
-* message_group_id
+* `:delay_seconds`
+* `:message_deduplication_id`
+* `:message_group_id`
 
 These options may also be specified by setting headers on the message being published. Headers on the message will
 trump any options specified in an `outgoing` block. For example:
@@ -148,5 +159,9 @@ message =
 ConduitSQS does not allow you to set the `message_attributes` option. Those will be filled from properties
 on the message and from the message headers.
 
-In addition to the SQS options, publish allows a `to` option to be set, which specifies the destination queue
-for the message. If the message already has it's destination set, this option will be ignored.
+In addition to the SQS options, you can also pass the following:
+
+* `:to` - The destination queue for the message. If the message already has it's destination set, this option will be ignored.
+* `:max_attempts` - How many times to retry publishing a message. Defaults to `10` when not specified. Can also be set globally.
+* `:base_backoff_in_ms` - The base factor used to exponentially backoff when a request fails. Defaults to `10` when not specified. Can also be set globally.
+* `:max_backoff_in_ms` - The maximum backoff when a request fails. Defaults to `10_000` when not specified. Can also be set globally.
