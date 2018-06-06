@@ -117,7 +117,6 @@ In addition to the SQS options, you can also pass the following:
 * `:worker_pool_size` - The number of workers that simultaneously consume from that queue. Defaults to 5.
 * `:max_demand` - Max number of messages in flow. Defaults to 1000.
 * `:min_demand` - Minumum threshold of messages to cause pulling of more. Defaults to 500.
-* `:max_attempts` - How many times to retry publishing a message. Defaults to `10` when not specified. Can also be overriden on each `publish`.
 * `:base_backoff_in_ms` - The base factor used to exponentially backoff when a request fails. Defaults to `10` when not specified. Can also be set globally.
 * `:max_backoff_in_ms` - The maximum backoff when a request fails. Defaults to `10_000` when not specified. Can also be set globally.
 
