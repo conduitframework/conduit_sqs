@@ -93,5 +93,5 @@ defmodule ConduitSQS.SQS do
     |> ExAws.request(opts)
   end
 
-  defp request_opts(opts), do: Keyword.take(opts, [:base_backoff_in_ms, :max_backoff_in_ms, :max_attempts])
+  defp request_opts(opts), do: Keyword.take(opts, [:region, :base_backoff_in_ms, :max_backoff_in_ms, :max_attempts])
 end
