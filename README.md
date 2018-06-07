@@ -37,6 +37,7 @@ config :my_app, MyApp.Broker,
 * `:max_attempts` - How many times to retry publishing a message. Defaults to `10` when not specified. Can also be overriden on each `publish`.
 * `:base_backoff_in_ms` - The base factor used to exponentially backoff when a request fails. Defaults to `10` when not specified. Can also be overriden on `queue`, `publish`, and `subscribe`.
 * `:max_backoff_in_ms` - The maximum backoff when a request fails. Defaults to `10_000` when not specified. Can also be overriden on `queue`, `publish`, and `subscribe`.
+* `:region` - The AWS region to use by default. Defaults to `"us-east-1"` when not specified. Can also be overriden on `queue`, `publish`, and `subscribe`.
 
 ## Configuring Queues
 
@@ -47,7 +48,7 @@ startup with the options you specify.
 defmodule MyApp.Broker do
   configure do
     queue "my-queue"
-    queue "my-other-queue", fifo_queue: true
+    queue "my-other-queue.fifo", fifo_queue: true
   end
 end
 ```
@@ -78,6 +79,7 @@ In addition to the SQS options, you can also pass the following:
 
 * `:base_backoff_in_ms` - The base factor used to exponentially backoff when a request fails. Defaults to `10` when not specified. Can also be set globally.
 * `:max_backoff_in_ms` - The maximum backoff when a request fails. Defaults to `10_000` when not specified. Can also be set globally.
+* `:region` - The AWS region to use. Defaults to `"us-east-1"` when not specified. Can also be set globally.
 
 ## Configuring a Subscriber
 
@@ -119,6 +121,7 @@ In addition to the SQS options, you can also pass the following:
 * `:min_demand` - Minumum threshold of messages to cause pulling of more. Defaults to 500.
 * `:base_backoff_in_ms` - The base factor used to exponentially backoff when a request fails. Defaults to `10` when not specified. Can also be set globally.
 * `:max_backoff_in_ms` - The maximum backoff when a request fails. Defaults to `10_000` when not specified. Can also be set globally.
+* `:region` - The AWS region to use. Defaults to `"us-east-1"` when not specified. Can also be set globally.
 
 ## Configuring a Publisher
 
@@ -164,3 +167,4 @@ In addition to the SQS options, you can also pass the following:
 * `:max_attempts` - How many times to retry publishing a message. Defaults to `10` when not specified. Can also be set globally.
 * `:base_backoff_in_ms` - The base factor used to exponentially backoff when a request fails. Defaults to `10` when not specified. Can also be set globally.
 * `:max_backoff_in_ms` - The maximum backoff when a request fails. Defaults to `10_000` when not specified. Can also be set globally.
+* `:region` - The AWS region to use. Defaults to `"us-east-1"` when not specified. Can also be set globally.
