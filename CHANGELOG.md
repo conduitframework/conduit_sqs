@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.4 (2018-06-07)
+
+### Added
+
+- Ability to pass `:region` option at multiple levels
+
 ## 0.2.3 (2018-05-27)
 
 ### Fixed
