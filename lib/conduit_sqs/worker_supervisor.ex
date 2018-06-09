@@ -20,7 +20,8 @@ defmodule ConduitSQS.WorkerSupervisor do
   @doc false
   @impl true
   def init([broker, name, sub_opts, opts]) do
-    worker_pool_size = Keyword.get(sub_opts, :worker_pool_size, Keyword.get(opts, :worker_pool_size, 5))
+    opts = Keyword.merge(opts, sub_opts)
+    worker_pool_size = Keyword.get(opts, :worker_pool_size, 5)
 
     children =
       1..worker_pool_size
