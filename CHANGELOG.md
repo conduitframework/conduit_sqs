@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.5 (2018-06-08)
+
+### Fixed
+
+- Subscriber options weren't being passed to GenStage worker
+
 ## 0.2.4 (2018-06-07)
 
 ### Added

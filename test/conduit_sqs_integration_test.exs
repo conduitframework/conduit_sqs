@@ -1,7 +1,6 @@
 defmodule ConduitSQSIntegrationTest do
   use ExUnit.Case, async: false
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
-  import Conduit.Message
   alias Conduit.Message
 
   defmodule Subscriber do
@@ -47,7 +46,7 @@ defmodule ConduitSQSIntegrationTest do
     Process.register(self(), __MODULE__)
     {:ok, _pid} = Broker.start_link()
 
-    message = put_body(%Message{}, "hi")
+    message = Message.put_body(%Message{}, "hi")
 
     Broker.publish(:sub, message)
 
