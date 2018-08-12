@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.6 (2018-08-12)
+
+### Added
+
+- More loggin around queue creation and polling
+
 ## 0.2.5 (2018-06-08)
 
 ### Fixed
