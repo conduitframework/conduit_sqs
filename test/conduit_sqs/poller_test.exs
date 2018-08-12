@@ -1,6 +1,7 @@
 defmodule ConduitSQS.PollerTest do
   use ExUnit.Case, async: true
   import Injex.Test
+  import ExUnit.CaptureLog
   alias ConduitSQS.Poller
   alias Conduit.Message
 
@@ -139,8 +140,11 @@ defmodule ConduitSQS.PollerTest do
 
     test "when pollers should be active" do
       override Poller, meta: MetaActive do
-        Poller.handle_info(:check_active, %Poller.State{})
+        result = assert capture_log(fn ->
+          Poller.handle_info(:check_active, %Poller.State{queue: "foo"})
+        end)
 
+        assert result =~ "Starting poller for queue \"foo\" in \"default region\""
         assert_received {:"$gen_cast", {:"$demand", :forward}}
       end
     end

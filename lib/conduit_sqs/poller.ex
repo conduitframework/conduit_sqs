@@ -4,6 +4,7 @@ defmodule ConduitSQS.Poller do
   """
   use GenStage
   import Injex
+  require Logger
   inject :meta, ConduitSQS.Meta
   inject :sqs, ConduitSQS.SQS
 
@@ -49,6 +50,7 @@ defmodule ConduitSQS.Poller do
   end
 
   @impl true
+  @spec handle_demand(integer(), ConduitSQS.Poller.State.t()) :: {:noreply, [], ConduitSQS.Poller.State.t()}
   def handle_demand(new_demand, %State{demand: 0} = state) do
     Process.send(self(), :get_messages, [])
 
@@ -60,6 +62,9 @@ defmodule ConduitSQS.Poller do
   end
 
   @impl true
+  @spec handle_info(:get_messages, ConduitSQS.Poller.State.t()) ::
+          {:noreply, [Conduit.Message.t()], ConduitSQS.Poller.State.t(), :hibernate}
+  @spec handle_info(:check_active, ConduitSQS.Poller.State.t()) :: {:noreply, [], ConduitSQS.Poller.State.t()}
   def handle_info(:get_messages, %State{queue: queue, demand: current_demand} = state) do
     fetch_limit = Keyword.get(state.subscriber_opts, :max_number_of_messages, 10)
     max_number_of_messages = min(min(fetch_limit, current_demand), 10)
@@ -83,13 +88,20 @@ defmodule ConduitSQS.Poller do
     {:noreply, messages, %{state | demand: new_demand}, :hibernate}
   end
 
-  @impl true
-  def handle_info(:check_active, %State{broker: broker} = state) do
+  def handle_info(:check_active, %State{broker: broker, queue: queue} = state) do
     case meta().pollers_active?(broker) do
-      true -> GenStage.demand(self(), :forward)
-      _ -> Process.send_after(self(), :check_active, 20)
+      true ->
+        Logger.info("Starting poller for queue #{inspect(queue)} in #{inspect(get_region(state))}")
+        GenStage.demand(self(), :forward)
+
+      _ ->
+        Process.send_after(self(), :check_active, 20)
     end
 
     {:noreply, [], state}
+  end
+
+  defp get_region(state) do
+    state.subscriber_opts[:region] || state.adapter_opts[:region] || "default region"
   end
 end

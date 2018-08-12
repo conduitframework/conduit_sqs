@@ -28,12 +28,14 @@ defmodule ConduitSQS.SQS do
   end
 
   defp setup({:queue, name, queue_opts}, opts) do
-    Logger.info("Declaring queue #{name}")
-
     request_opts =
       opts
       |> Keyword.merge(request_opts(queue_opts))
       |> Keyword.merge(max_attempts: :infinity)
+
+    region = Keyword.get(request_opts, :region, "default region")
+
+    Logger.info("Declaring queue #{inspect(name)} in #{inspect(region)}")
 
     name
     |> Client.create_queue(queue_opts)
