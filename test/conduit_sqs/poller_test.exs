@@ -140,9 +140,10 @@ defmodule ConduitSQS.PollerTest do
 
     test "when pollers should be active" do
       override Poller, meta: MetaActive do
-        result = assert capture_log(fn ->
-          Poller.handle_info(:check_active, %Poller.State{queue: "foo"})
-        end)
+        result =
+          assert capture_log(fn ->
+                   Poller.handle_info(:check_active, %Poller.State{queue: "foo"})
+                 end)
 
         assert result =~ "Starting poller for queue \"foo\" in \"default region\""
         assert_received {:"$gen_cast", {:"$demand", :forward}}
