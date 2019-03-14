@@ -15,7 +15,7 @@ The package can be installed by adding `conduit_sqs` to your list of dependencie
 
 ```elixir
 def deps do
-  [{:conduit_sqs, "~> 0.1.0"}]
+  [{:conduit_sqs, "~> 0.2.7"}]
 end
 ```
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.7 (2019-03-13)
+
+### Fixed
+
+- Handle [message that hackney is leaking](https://github.com/benoitc/hackney/issues/464) so poller doesn't crash.
+
 ## 0.2.6 (2018-08-12)
 
 ### Added
