@@ -44,4 +44,11 @@ defmodule ConduitSQS.Setup do
 
     {:stop, :normal, state}
   end
+
+  # Hackney is leaking messages. This handles these messages, so the process doesn't crash.
+  # https://github.com/benoitc/hackney/issues/464
+  @impl true
+  def handle_info({:ssl_closed, {:sslsocket, {:gen_tcp, _, _, _}, _}}, state) do
+    {:noreply, [], state}
+  end
 end
