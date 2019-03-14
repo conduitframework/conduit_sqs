@@ -11,6 +11,14 @@ defmodule ConduitSQS.Poller do
   @behaviour GenStage
 
   defmodule State do
+    @type t :: %__MODULE__{
+            broker: module,
+            queue: String.t(),
+            subscriber_opts: Keyword.t(),
+            adapter_opts: Keyword.t(),
+            demand: pos_integer
+          }
+
     @moduledoc false
     defstruct [:broker, :queue, :subscriber_opts, :adapter_opts, demand: 0]
   end
