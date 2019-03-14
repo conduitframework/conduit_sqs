@@ -48,7 +48,7 @@ defmodule ConduitSQSIntegrationTest do
 
     message = Message.put_body(%Message{}, "hi")
 
-    Broker.publish(:sub, message)
+    Broker.publish(message, :sub)
 
     assert_receive {:process, consumed_message}, 1000
 

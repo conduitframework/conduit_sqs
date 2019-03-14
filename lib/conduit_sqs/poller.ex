@@ -101,6 +101,12 @@ defmodule ConduitSQS.Poller do
     {:noreply, [], state}
   end
 
+  # Hackney is leaking messages. This handles these messages, so the process doesn't crash.
+  # https://github.com/benoitc/hackney/issues/464
+  def handle_info({:ssl_closed, {:sslsocket, {:gen_tcp, _, _, _}, _}}, state) do
+    {:noreply, [], state}
+  end
+
   defp get_region(state) do
     state.subscriber_opts[:region] || state.adapter_opts[:region] || "default region"
   end
