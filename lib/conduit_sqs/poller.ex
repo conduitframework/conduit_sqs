@@ -8,8 +8,6 @@ defmodule ConduitSQS.Poller do
   inject :meta, ConduitSQS.Meta
   inject :sqs, ConduitSQS.SQS
 
-  @behaviour GenStage
-
   defmodule State do
     @type t :: %__MODULE__{
             broker: module,

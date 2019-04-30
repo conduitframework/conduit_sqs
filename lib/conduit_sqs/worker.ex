@@ -6,8 +6,6 @@ defmodule ConduitSQS.Worker do
   import Injex
   inject :message_processor, ConduitSQS.MessageProcessor
 
-  @behaviour GenStage
-
   defmodule State do
     @moduledoc false
     defstruct [:broker, :name, :adapter_opts]
