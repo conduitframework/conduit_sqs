@@ -4,7 +4,7 @@ defmodule ConduitSQS.Mixfile do
   def project do
     [
       app: :conduit_sqs,
-      version: "0.2.7",
+      version: "0.3.0",
       elixir: "~> 1.4",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,

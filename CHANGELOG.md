@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 (2019-04-30)
+
+### Changed
+
+- GenStage upgraded to 0.14.X
+
 ## 0.2.7 (2019-03-13)
 
 ### Fixed
