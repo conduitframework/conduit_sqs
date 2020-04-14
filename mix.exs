@@ -56,7 +56,7 @@ defmodule ConduitSQS.Mixfile do
     [
       {:conduit, "~> 0.11"},
       {:ex_aws, "~> 2.0"},
-      {:ex_aws_sqs, "~> 2.0"},
+      {:ex_aws_sqs, "~> 3.2"},
       {:hackney, "~> 1.9"},
       {:sweet_xml, "~> 0.6"},
       {:poison, "~> 2.0 or ~> 3.0"},
