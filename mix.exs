@@ -65,7 +65,7 @@ defmodule ConduitSQS.Mixfile do
       {:ex_doc, "~> 0.14", only: :dev},
       {:dialyxir, "~> 0.4", only: :dev},
       {:excoveralls, "~> 0.5", only: :test},
-      {:credo, "~> 0.7", only: [:dev, :test]},
+      {:credo, "~> 1.5", only: [:dev, :test]},
       {:exvcr, "~> 0.9", only: :test}
     ]
   end
