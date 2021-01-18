@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1 (2021-01-18)
+
+- Support GenStage 1.X
+
 ## 0.3.0 (2019-04-30)
 
 ### Changed
