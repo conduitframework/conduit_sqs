@@ -24,6 +24,25 @@ defmodule ConduitSQS.PollerTest do
 
       assert_received :check_active
     end
+
+    test "w/ custom polling timeout" do
+      queue = "conduitsqs-test"
+      subscriber_opts = [polling_timeout: 1000]
+      adapter_opts = [polling_timeout: 500]
+
+      assert Poller.init([Broker, queue, subscriber_opts, adapter_opts]) == {
+               :producer,
+               %Poller.State{
+                 broker: Broker,
+                 queue: queue,
+                 subscriber_opts: subscriber_opts,
+                 adapter_opts: adapter_opts
+               },
+               [demand: :accumulate]
+             }
+
+      assert_received :check_active
+    end
   end
 
   describe "handle_demand/2" do
@@ -127,6 +146,34 @@ defmodule ConduitSQS.PollerTest do
                }
 
         assert_receive :get_messages, 300
+      end
+    end
+
+    test "when custom polling_timeout is set" do
+      override Poller, sqs: SQSLess do
+
+        polling_timeout = 1000
+
+        state = %Poller.State{
+          queue: "conduitsqs-test",
+          subscriber_opts: [max_number_of_messages: 5, polling_timeout: polling_timeout],
+          adapter_opts: [],
+          demand: 10
+        }
+
+        assert Poller.handle_info(:get_messages, state) == {
+                 :noreply,
+                 [%Message{}, %Message{}, %Message{}],
+                 %Poller.State{
+                   queue: "conduitsqs-test",
+                   subscriber_opts: [max_number_of_messages: 5, polling_timeout: polling_timeout],
+                   adapter_opts: [],
+                   demand: 7
+                 },
+                 :hibernate
+               }
+
+        assert_receive :get_messages, polling_timeout + 500
       end
     end
   end

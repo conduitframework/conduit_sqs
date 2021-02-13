@@ -72,6 +72,11 @@ defmodule ConduitSQS.Poller do
           {:noreply, [Conduit.Message.t()], ConduitSQS.Poller.State.t(), :hibernate}
   @spec handle_info(:check_active, ConduitSQS.Poller.State.t()) :: {:noreply, [], ConduitSQS.Poller.State.t()}
   def handle_info(:get_messages, %State{queue: queue, demand: current_demand} = state) do
+
+    adapter_polling_timeout = Keyword.get(state.adapter_opts , :polling_timeout)
+    subscriber_polling_timeout = Keyword.get(state.subscriber_opts , :polling_timeout)
+    polling_timeout = subscriber_polling_timeout || adapter_polling_timeout || 200
+
     fetch_limit = Keyword.get(state.subscriber_opts, :max_number_of_messages, 10)
     max_number_of_messages = min(min(fetch_limit, current_demand), 10)
 
@@ -88,7 +93,7 @@ defmodule ConduitSQS.Poller do
         Process.send(self(), :get_messages, [])
 
       true ->
-        Process.send_after(self(), :get_messages, 200)
+        Process.send_after(self(), :get_messages, polling_timeout)
     end
 
     {:noreply, messages, %{state | demand: new_demand}, :hibernate}
