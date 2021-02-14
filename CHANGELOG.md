@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.2 (2021-02-13)
+
+- Allow polling interval to be configurable
+
 ## 0.3.1 (2021-01-18)
 
 - Support GenStage 1.X
