@@ -63,7 +63,7 @@ defmodule ConduitSQS.Mixfile do
       {:gen_stage, "~> 0.14.0 or ~> 1.0"},
       {:injex, "~> 1.0"},
       {:ex_doc, "~> 0.14", only: :dev},
-      {:dialyxir, "~> 0.4", only: :dev},
+      {:dialyxir, "~> 1.0", only: :dev},
       {:excoveralls, "~> 0.5", only: :test},
       {:credo, "~> 0.7", only: [:dev, :test]},
       {:exvcr, "~> 0.9", only: :test}
