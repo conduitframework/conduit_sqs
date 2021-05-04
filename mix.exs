@@ -59,7 +59,7 @@ defmodule ConduitSQS.Mixfile do
       {:ex_aws_sqs, "~> 2.0"},
       {:hackney, "~> 1.9"},
       {:sweet_xml, "~> 0.6"},
-      {:poison, "~> 2.0 or ~> 3.0"},
+      {:poison, "~> 2.0 or ~> 3.0 or ~> 4.0"},
       {:gen_stage, "~> 0.14.0 or ~> 1.0"},
       {:injex, "~> 1.0"},
       {:ex_doc, "~> 0.14", only: :dev},
